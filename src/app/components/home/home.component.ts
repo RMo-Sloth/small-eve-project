@@ -1,12 +1,13 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as d3 from 'd3';
+import { FwEmpiresService } from 'src/app/fw-empires.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements AfterViewInit {
+export class HomeComponent implements AfterViewInit, OnInit {
   @ViewChild('graph') graph !: ElementRef<HTMLElement>;
   data: Array<{x:number, y: number}> = [
     {x: 100, y: 200},
@@ -15,6 +16,16 @@ export class HomeComponent implements AfterViewInit {
     {x: 150, y: 125},
     {x: 400, y: 500},
   ]
+
+  constructor(
+    private empire_service: FwEmpiresService
+  ) {
+
+  }
+
+  ngOnInit() {
+    this.empire_service.data$.subscribe( console.log );
+  }
 
   ngAfterViewInit(): void {
     const height = this.graph.nativeElement.clientHeight;
