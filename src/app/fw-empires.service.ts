@@ -11,10 +11,9 @@ export class FwEmpiresService {
   constructor(
     private eve_http: EveHttpService
   ) {
-    this.eve_http.get('https://esi.evetech.net/latest/fw/stats/?datasource=tranquility').subscribe( response => {
+    this.eve_http.get('https://esi.evetech.net/latest/fw/stats').subscribe( response => {
       this.data$.next( response )
     })
-    console.log( 'ran FwEmpireService' );
   }
 
 
