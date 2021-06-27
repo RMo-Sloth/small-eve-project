@@ -30,19 +30,19 @@ export class FwEmpiresService {
     switch (empire.faction_id) {
       case 500001:
         result.faction = 'Caldari';
-        result.color = 'blue';
+        result.color = '#4a6c7f';
         break;
       case 500002:
         result.faction = 'Minmatar';
-        result.color = 'red';
+        result.color = '#653834';
         break;
       case 500003:
         result.faction = 'Amarr';
-        result.color = 'yellow';
+        result.color = '#7f6c50';
         break;
       case 500004:
         result.faction = 'Gallente';
-        result.color = 'purple';
+        result.color = '#366565';
         break;
       default:
         console.error(`Faction with faction_id of ${empire.faction_id} is not recognised`);
@@ -75,7 +75,7 @@ interface RawEmpireData {
   }
 }
 
-interface EmpireData {
+export interface EmpireData {
   faction: 'Minmatar' | 'Caldari' | 'Gallente' | 'Amarr' | null,
   color: string;
   kills: {
