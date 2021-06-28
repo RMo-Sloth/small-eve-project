@@ -36,7 +36,12 @@ export class HomeComponent implements AfterViewInit {
 
     const enter = d3.select( this.legend.nativeElement )
       .selectAll('text')
-      .data( this.chart_data )
+      .data( [
+        { faction: { name: 'Minmatar', color: '#653834' } },
+        { faction: { name: 'Amarr', color: '#7f6c50' } },
+        { faction: { name: 'Caldari', color: '#4a6c7f' } },
+        { faction: { name: 'Gallente', color: '#366565' } },
+      ] )
       .enter()
 
     enter.append('text')
@@ -45,7 +50,9 @@ export class HomeComponent implements AfterViewInit {
       .style( 'cursor', 'pointer' )
       .attr('x', d => legend_meta.x_pos() + 60 )
       .attr('y', d => legend_meta.y_scale( d.faction.name ) as number )
-      .attr('font-size', 50 );
+      .attr('font-size', 50 )
+      .on('click', (event, d) => this.empire_service.toggle_faction( d.faction.name ) );
+
 
     enter.append( 'rect' )
       .attr( 'height', 30 )
@@ -58,12 +65,31 @@ export class HomeComponent implements AfterViewInit {
   private update_chart() {
     const chart = new BarChartMeta( this.chart_data );
 
-    d3.select( this.chart.nativeElement )
+    const enter = d3.select( this.chart.nativeElement )
     .selectAll('rect')
     .data( this.chart_data )
     .enter()
-    .append( 'rect' )
+
+    enter.append( 'rect' )
     .attr('width', () => chart.x_scale.bandwidth() as number )
+    .attr( 'x', d => chart.x_scale( d.faction.name ) as number )
+    .attr( 'y', d => chart.y_pos( d.value ) )
+    .attr('height', d => chart.y_scale( d.value ) )
+    .attr( 'fill', d => d.faction.color )
+
+    const exit = d3.select( this.chart.nativeElement )
+    .selectAll('rect')
+    .data( this.chart_data )
+    .exit()
+
+    exit.remove()
+
+    const update = d3.select( this.chart.nativeElement )
+    .selectAll('rect')
+    .data( this.chart_data )
+    .transition()
+
+    update.attr('width', () => chart.x_scale.bandwidth() as number )
     .attr( 'x', d => chart.x_scale( d.faction.name ) as number )
     .attr( 'y', d => chart.y_pos( d.value ) )
     .attr('height', d => chart.y_scale( d.value ) )

@@ -20,6 +20,15 @@ export class FwEmpiresService {
     });
   }
 
+  public toggle_faction( faction: string): void {
+    if( this.selected_factions.includes( faction ) )
+      this.selected_factions = this.selected_factions.filter( value => value !== faction );
+    else
+    this.selected_factions.push( faction )
+
+    this.chart_data$.next( this.chart_data );
+  }
+
   private get chart_data(): ChartData[] {
     return this.data.map( empire => {
       return {
@@ -70,8 +79,6 @@ export class FwEmpiresService {
   private fetch_data(): Observable<RawEmpireData[]> {
     return this.eve_http.get('https://esi.evetech.net/latest/fw/stats') as Observable<RawEmpireData[]>;
   }
-
-
 
 }
 
