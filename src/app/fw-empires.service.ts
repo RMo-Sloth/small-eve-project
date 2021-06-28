@@ -19,7 +19,7 @@ export class FwEmpiresService {
 
   private enhance_raw_empire_data(empire: RawEmpireData) {
     const result: EmpireData = {
-      faction: null,
+      faction: 'Amarr',
       color: 'black',
       kills: empire.kills,
       pilots: empire.pilots,
@@ -76,7 +76,7 @@ interface RawEmpireData {
 }
 
 export interface EmpireData {
-  faction: 'Minmatar' | 'Caldari' | 'Gallente' | 'Amarr' | null,
+  faction: 'Minmatar' | 'Caldari' | 'Gallente' | 'Amarr',
   color: string;
   kills: {
     last_week: number;

@@ -34,7 +34,7 @@ export class HomeComponent implements AfterViewInit {
   private update_legend() {
     if( this.data === null ) return;
 
-    const area = new SvgArea( 621, 379, 1000, 1000 );
+    const area = new SvgArea( 621, 200, 1000, 1000 );
 
     d3.select( this.legend.nativeElement )
       .append('text')
@@ -49,15 +49,18 @@ export class HomeComponent implements AfterViewInit {
   private update_chart() {
     if( this.data === null ) return;
 
-    const chart = new BarChartMeta( new SystemsControlled( this.data ) );
+    const chart = new BarChartMeta(
+      new SystemsControlled( this.data ),
+      this.data
+    );
 
     d3.select( this.chart.nativeElement )
     .selectAll('rect')
     .data( this.data )
     .enter()
     .append( 'rect' )
-    .attr('width', (d, i) => chart.x_scale(d, i) )
-    .attr( 'x', (d, i) => i*170 )
+    .attr('width', () => chart.x_scale.bandwidth() as number )
+    .attr( 'x', d => chart.x_scale( d.faction ) as number )
     .attr( 'y', d => chart.y_pos( d.systems_controlled ) )
     .attr('height', d => chart.y_scale( d.systems_controlled ) )
     .attr( 'fill', d => d.color )
@@ -67,9 +70,10 @@ export class HomeComponent implements AfterViewInit {
 
 // classes
 class BarChartMeta {
-  private area = new SvgArea( 0, 379, 621, 1000 );
+  private area = new SvgArea( 0, 250, 500, 750 );
   constructor(
-    private data: DataExtractor
+    private data: DataExtractor,
+    private all_data: EmpireData[]
   ) {}
 
   public get y_scale(): d3.ScaleLinear<number, number, never> {
@@ -80,8 +84,11 @@ class BarChartMeta {
     return this.area.bottom - this.y_scale( d );
   }
 
-  public x_scale( d: any, index: number ): number {
-    return 150;
+  public get x_scale(): d3.ScaleBand<string> {
+    return d3.scaleBand()
+      .paddingInner( 0.1 )
+      .domain( this.all_data.map( d => d.faction ) )
+      .range([this.area.left, this.area.right])
   }
 
 }
@@ -135,6 +142,9 @@ class SvgArea {
     }
     public get left() {
       return this.x1 + this.padding;
+    }
+    public get right() {
+      return this.x2 - this.padding;
     }
 
 }
