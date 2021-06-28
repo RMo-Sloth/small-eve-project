@@ -29,6 +29,21 @@ export class HomeComponent implements AfterViewInit {
 
   update_svg() {
     this.update_chart();
+    this.update_legend();
+  }
+  private update_legend() {
+    if( this.data === null ) return;
+
+    const area = new SvgArea( 621, 379, 1000, 1000 );
+
+    d3.select( this.legend.nativeElement )
+      .append('text')
+      .text( 'Legend' )
+      .style('fill', 'white')
+      .attr('x', area.left )
+      .attr('y', area.top + 50 )
+      .attr('font-size', 50 )
+
   }
 
   private update_chart() {
@@ -112,8 +127,17 @@ class SvgArea {
     public get height(): number {
       return this.y2 - this.y1 - 2 * this.padding;
     }
-    public get bottom() {
+    public get bottom(): number {
       return this.y2 - this.padding;
+    }
+    public get top(): number {
+      return this.y1 + this.padding;
+    }
+    public get left() {
+      return this.x1 + this.padding;
     }
 
 }
+
+// Legend
+
