@@ -45,29 +45,27 @@ export class HomeComponent implements AfterViewInit {
     this.update_legend();
   }
   private update_legend() {
-    if( this.data === null ) return;
-
     const legend_meta = new LegendaMeta();
 
     const enter = d3.select( this.legend.nativeElement )
       .selectAll('text')
-      .data( this.data )
+      .data( this.chart_data )
       .enter()
 
     enter.append('text')
-      .text( d => d.faction )
+      .text( d => d.faction.name )
       .style('fill', 'white')
       .style( 'cursor', 'pointer' )
       .attr('x', d => legend_meta.x_pos() + 60 )
-      .attr('y', d => legend_meta.y_scale( d.faction ) as number )
+      .attr('y', d => legend_meta.y_scale( d.faction.name ) as number )
       .attr('font-size', 50 );
 
     enter.append( 'rect' )
       .attr( 'height', 30 )
       .attr( 'width', 30 )
-      .attr('fill', d => d.color )
+      .attr('fill', d => d.faction.color )
       .attr('x', d => legend_meta.x_pos() )
-      .attr('y', d => legend_meta.y_scale( d.faction ) as number - 30 )
+      .attr('y', d => legend_meta.y_scale( d.faction.name ) as number - 30 )
   }
 
   private update_chart() {
