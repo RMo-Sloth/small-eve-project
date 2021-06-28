@@ -1,26 +1,42 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { EveHttpService } from './eve-http.service';
+import { ChartData } from './interfaces/ChartData.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FwEmpiresService {
   public data$: BehaviorSubject<EmpireData[] | null> = new BehaviorSubject<EmpireData[] | null>( null );
+  public data !: EmpireData[];
   public selected_factions: string[] = [
     'Minmatar',
     'Amarr',
     'Caldari',
     'Gallente'
   ];
+  public chart_data$: BehaviorSubject<ChartData[]> = new BehaviorSubject<ChartData[]>( [] );
 
   constructor(
     private eve_http: EveHttpService
   ) {
     this.fetch_data().subscribe( raw_data => {
-      const data = raw_data.map( this.enhance_raw_empire_data )
-      this.data$.next( data )
+      this.data = raw_data.map( this.enhance_raw_empire_data )
+      this.data$.next( this.data );
+    });
+  }
+
+  public get chart_data(): ChartData[] {
+    return this.data.map( empire => {
+      return {
+        faction: {
+          name: empire.faction,
+          color: empire.color
+        },
+        value: empire.systems_controlled
+      }
     })
+    .filter( empire => this.selected_factions.includes( empire.faction.name ) );
   }
 
   private enhance_raw_empire_data(empire: RawEmpireData) {

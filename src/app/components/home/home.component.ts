@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import * as d3 from 'd3';
-import { EmpireData, FwEmpiresService } from 'src/app/fw-empires.service';
+import { FwEmpiresService } from 'src/app/fw-empires.service';
+import { ChartData } from 'src/app/interfaces/ChartData.interface';
 
 @Component({
   selector: 'app-home',
@@ -12,7 +13,6 @@ export class HomeComponent implements AfterViewInit {
   @ViewChild('chart') chart !: ElementRef<HTMLElement>;
   @ViewChild('legend') legend !: ElementRef<HTMLElement>;
 
-  private data !: EmpireData[] | null;
   private chart_data !: ChartData[];
 
   constructor(
@@ -21,26 +21,12 @@ export class HomeComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.empire_service.data$.subscribe( data => {
-      this.data = data;
       if( data ) this.update_svg();
     });
   }
 
   private update_svg() {
-    if( this.data === null  ) return;
-
-    // transform
-    this.chart_data = this.data.map( empire => {
-      return {
-        faction: {
-          name: empire.faction,
-          color: empire.color
-        },
-        value: empire.systems_controlled
-      }
-    })
-    .filter( empire => this.empire_service.selected_factions.includes( empire.faction.name ) );
-
+    this.chart_data = this.empire_service.chart_data;
     this.update_chart();
     this.update_legend();
   }
@@ -168,14 +154,6 @@ class SvgArea {
 }
 
 // CHARTDATA
-interface ChartData {
-  faction: {
-    name: string,
-    color: string
-  },
-  value: number
-}
-
 class ChartDataHelper {
   constructor(
     private data: ChartData[]
