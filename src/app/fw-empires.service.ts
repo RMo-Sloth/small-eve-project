@@ -31,15 +31,19 @@ export class FwEmpiresService {
     if( this.selected_factions.includes( faction ) )
       this.selected_factions = this.selected_factions.filter( value => value !== faction );
     else
-    this.selected_factions.push( faction )
+      this.selected_factions.push( faction )
 
     this.chart_data$.next( this.chart_data );
-    this.legend_data$.next( [
-      { faction: { name: 'Minmatar', color: '#653834' }, active: true },
-      { faction: { name: 'Amarr', color: '#7f6c50' }, active: true },
-      { faction: { name: 'Caldari', color: '#4a6c7f' }, active: false },
-      { faction: { name: 'Gallente', color: '#366565' }, active: true },
-    ] );
+    this.legend_data$.next( this.legend_data );
+  }
+
+  private get legend_data() {
+    return [
+      { faction: { name: 'Minmatar', color: '#653834' }, active: this.selected_factions.includes( 'Minmatar' ) },
+      { faction: { name: 'Amarr', color: '#7f6c50' }, active:  this.selected_factions.includes( 'Amarr' ) },
+      { faction: { name: 'Caldari', color: '#4a6c7f' }, active: this.selected_factions.includes( 'Caldari' ) },
+      { faction: { name: 'Gallente', color: '#366565' }, active: this.selected_factions.includes( 'Gallente' ) },
+    ]
   }
 
   private get chart_data(): ChartData[] {
