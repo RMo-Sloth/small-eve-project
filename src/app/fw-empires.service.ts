@@ -7,6 +7,12 @@ import { EveHttpService } from './eve-http.service';
 })
 export class FwEmpiresService {
   public data$: BehaviorSubject<EmpireData[] | null> = new BehaviorSubject<EmpireData[] | null>( null );
+  public selected_factions: string[] = [
+    'Minmatar',
+    'Amarr',
+    'Caldari',
+    'Gallente'
+  ];
 
   constructor(
     private eve_http: EveHttpService

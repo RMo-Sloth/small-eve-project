@@ -14,12 +14,6 @@ export class HomeComponent implements AfterViewInit {
 
   private data !: EmpireData[] | null;
   private chart_data !: ChartData[];
-  private selected_factions: string[] = [
-    'Minmatar',
-    'Amarr',
-    'Caldari',
-    'Gallente'
-  ];
 
   constructor(
     private empire_service: FwEmpiresService
@@ -45,7 +39,7 @@ export class HomeComponent implements AfterViewInit {
         value: empire.systems_controlled
       }
     })
-    .filter( empire => this.selected_factions.includes( empire.faction.name ) );
+    .filter( empire => this.empire_service.selected_factions.includes( empire.faction.name ) );
 
     this.update_chart();
     this.update_legend();
@@ -74,9 +68,6 @@ export class HomeComponent implements AfterViewInit {
       .attr('fill', d => d.color )
       .attr('x', d => legend_meta.x_pos() )
       .attr('y', d => legend_meta.y_scale( d.faction ) as number - 30 )
-
-
-
   }
 
   private update_chart() {
@@ -126,9 +117,7 @@ class BarChartMeta {
 class LegendaMeta {
   private area = new SvgArea( 600, 350, 1000, 650 );
 
-  constructor(
-
-  ) {}
+  constructor() {}
 
   public get y_scale() {
     return d3.scaleBand(  )
@@ -144,33 +133,6 @@ class LegendaMeta {
 
   public x_pos(): number {
     return this.area.left;
-  }
-
-}
-//
-interface ChartData {
-  faction: {
-    name: string,
-    color: string
-  },
-  value: number
-}
-
-class ChartDataHelper {
-  constructor(
-    private data: ChartData[]
-  ){}
-
-  public get max(): number {
-    return d3.max( this.data, d => d.value ) as number;
-  }
-
-  public get min() {
-    return d3.min( this.data, d => d.value ) as number;
-  }
-
-  public get factions() {
-    return this.data.map( empire => empire.faction.name );
   }
 
 }
@@ -206,3 +168,32 @@ class SvgArea {
 
 }
 
+// CHARTDATA
+interface ChartData {
+  faction: {
+    name: string,
+    color: string
+  },
+  value: number
+}
+
+class ChartDataHelper {
+  constructor(
+    private data: ChartData[]
+  ){}
+
+  public get max(): number {
+    return d3.max( this.data, d => d.value ) as number;
+  }
+
+  public get min() {
+    return d3.min( this.data, d => d.value ) as number;
+  }
+
+  public get factions() {
+    return this.data.map( empire => empire.faction.name );
+  }
+
+}
+
+//
