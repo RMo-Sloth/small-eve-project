@@ -13,12 +13,17 @@ export class HomeComponent implements AfterViewInit {
   @ViewChild('legend') legend !: ElementRef<HTMLElement>;
 
   private data !: EmpireData[] | null;
+  private chart_data !: ChartData[];
+  private selected_factions: string[] = [
+    'Minmatar',
+    'Amarr',
+    'Caldari',
+    'Gallente'
+  ];
 
   constructor(
     private empire_service: FwEmpiresService
-  ) {
-
-  }
+  ) {}
 
   ngAfterViewInit(): void {
     this.empire_service.data$.subscribe( data => {
@@ -28,13 +33,27 @@ export class HomeComponent implements AfterViewInit {
   }
 
   update_svg() {
+    if( this.data === null  ) return;
+
+    // transform
+    this.chart_data = this.data.map( empire => {
+      return {
+        faction: {
+          name: empire.faction,
+          color: empire.color
+        },
+        value: empire.systems_controlled
+      }
+    })
+    .filter( empire => this.selected_factions.includes( empire.faction.name ) );
+
     this.update_chart();
     this.update_legend();
   }
   private update_legend() {
     if( this.data === null ) return;
 
-    const legend_meta = new LegendaMeta( this.data );
+    const legend_meta = new LegendaMeta();
 
     const enter = d3.select( this.legend.nativeElement )
       .selectAll('text')
@@ -61,23 +80,18 @@ export class HomeComponent implements AfterViewInit {
   }
 
   private update_chart() {
-    if( this.data === null ) return;
-
-    const chart = new BarChartMeta(
-      new SystemsControlled( this.data ),
-      this.data
-    );
+    const chart = new BarChartMeta( this.chart_data );
 
     d3.select( this.chart.nativeElement )
     .selectAll('rect')
-    .data( this.data )
+    .data( this.chart_data )
     .enter()
     .append( 'rect' )
     .attr('width', () => chart.x_scale.bandwidth() as number )
-    .attr( 'x', d => chart.x_scale( d.faction ) as number )
-    .attr( 'y', d => chart.y_pos( d.systems_controlled ) )
-    .attr('height', d => chart.y_scale( d.systems_controlled ) )
-    .attr( 'fill', d => d.color )
+    .attr( 'x', d => chart.x_scale( d.faction.name ) as number )
+    .attr( 'y', d => chart.y_pos( d.value ) )
+    .attr('height', d => chart.y_scale( d.value ) )
+    .attr( 'fill', d => d.faction.color )
   }
 
 }
@@ -85,10 +99,12 @@ export class HomeComponent implements AfterViewInit {
 // classes
 class BarChartMeta {
   private area = new SvgArea( 0, 250, 500, 750 );
+  private data: ChartDataHelper;
   constructor(
-    private data: DataExtractor,
-    private all_data: EmpireData[]
-  ) {}
+    chart_data: ChartData[]
+  ) {
+    this.data = new ChartDataHelper( chart_data )
+  }
 
   public get y_scale(): d3.ScaleLinear<number, number, never> {
     return d3.scaleLinear().domain([0, this.data.max]).range([ 0, this.area.height ]);
@@ -101,7 +117,7 @@ class BarChartMeta {
   public get x_scale(): d3.ScaleBand<string> {
     return d3.scaleBand()
       .paddingInner( 0.1 )
-      .domain( this.all_data.map( d => d.faction ) )
+      .domain( this.data.factions)
       .range([this.area.left, this.area.right])
   }
 
@@ -111,13 +127,18 @@ class LegendaMeta {
   private area = new SvgArea( 600, 350, 1000, 650 );
 
   constructor(
-    private data: EmpireData[]
+
   ) {}
 
   public get y_scale() {
     return d3.scaleBand(  )
       .paddingInner( 0.1 )
-      .domain( this.data.map( d => d.faction ) )
+      .domain( [
+        'Minmatar',
+        'Amarr',
+        'Caldari',
+        'Gallente'
+      ] )
       .range([this.area.top + 25, this.area.bottom + 25])
   }
 
@@ -127,28 +148,29 @@ class LegendaMeta {
 
 }
 //
-
-//
-abstract class DataExtractor {
-  public abstract max: number;
-  public abstract min: number;
-
-  constructor( protected data: any[] ){}
+interface ChartData {
+  faction: {
+    name: string,
+    color: string
+  },
+  value: number
 }
 
-class SystemsControlled extends DataExtractor {
+class ChartDataHelper {
   constructor(
-    data: EmpireData[]
-  ){
-    super( data )
-  }
+    private data: ChartData[]
+  ){}
 
   public get max(): number {
-    return d3.max( this.data, d => d.systems_controlled ) as number;
+    return d3.max( this.data, d => d.value ) as number;
   }
 
   public get min() {
-    return d3.min( this.data, d => d.systems_controlled ) as number;
+    return d3.min( this.data, d => d.value ) as number;
+  }
+
+  public get factions() {
+    return this.data.map( empire => empire.faction.name );
   }
 
 }
@@ -183,6 +205,4 @@ class SvgArea {
     }
 
 }
-
-// Legend
 
