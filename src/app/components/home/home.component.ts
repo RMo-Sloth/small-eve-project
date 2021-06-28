@@ -34,15 +34,29 @@ export class HomeComponent implements AfterViewInit {
   private update_legend() {
     if( this.data === null ) return;
 
-    const area = new SvgArea( 621, 200, 1000, 1000 );
+    const legend_meta = new LegendaMeta( this.data );
 
-    d3.select( this.legend.nativeElement )
-      .append('text')
-      .text( 'Legend' )
+    const enter = d3.select( this.legend.nativeElement )
+      .selectAll('text')
+      .data( this.data )
+      .enter()
+
+    enter.append('text')
+      .text( d => d.faction )
       .style('fill', 'white')
-      .attr('x', area.left )
-      .attr('y', area.top + 50 )
-      .attr('font-size', 50 )
+      .style( 'cursor', 'pointer' )
+      .attr('x', d => legend_meta.x_pos() + 60 )
+      .attr('y', d => legend_meta.y_scale( d.faction ) as number )
+      .attr('font-size', 50 );
+
+    enter.append( 'rect' )
+      .attr( 'height', 30 )
+      .attr( 'width', 30 )
+      .attr('fill', d => d.color )
+      .attr('x', d => legend_meta.x_pos() )
+      .attr('y', d => legend_meta.y_scale( d.faction ) as number - 30 )
+
+
 
   }
 
@@ -92,8 +106,29 @@ class BarChartMeta {
   }
 
 }
+//
+class LegendaMeta {
+  private area = new SvgArea( 600, 350, 1000, 650 );
 
+  constructor(
+    private data: EmpireData[]
+  ) {}
 
+  public get y_scale() {
+    return d3.scaleBand(  )
+      .paddingInner( 0.1 )
+      .domain( this.data.map( d => d.faction ) )
+      .range([this.area.top + 25, this.area.bottom + 25])
+  }
+
+  public x_pos(): number {
+    return this.area.left;
+  }
+
+}
+//
+
+//
 abstract class DataExtractor {
   public abstract max: number;
   public abstract min: number;
