@@ -22,13 +22,9 @@ export class HomeComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.empire_service.chart_data$.subscribe( chart_data => {
       this.chart_data = chart_data;
-      this.update_svg();
+      this.update_chart();
+      this.update_legend();
     });
-  }
-
-  private update_svg() {
-    this.update_chart();
-    this.update_legend();
   }
 
   private update_legend() {
@@ -37,10 +33,10 @@ export class HomeComponent implements AfterViewInit {
     const enter = d3.select( this.legend.nativeElement )
       .selectAll('text')
       .data( [
-        { faction: { name: 'Minmatar', color: '#653834' } },
-        { faction: { name: 'Amarr', color: '#7f6c50' } },
-        { faction: { name: 'Caldari', color: '#4a6c7f' } },
-        { faction: { name: 'Gallente', color: '#366565' } },
+        { faction: { name: 'Minmatar', color: '#653834' }, active: true },
+        { faction: { name: 'Amarr', color: '#7f6c50' }, active: true },
+        { faction: { name: 'Caldari', color: '#4a6c7f' }, active: false },
+        { faction: { name: 'Gallente', color: '#366565' }, active: true },
       ] )
       .enter()
 
@@ -51,6 +47,7 @@ export class HomeComponent implements AfterViewInit {
       .attr('x', d => legend_meta.x_pos() + 60 )
       .attr('y', d => legend_meta.y_scale( d.faction.name ) as number )
       .attr('font-size', 50 )
+      .attr('opacity', d => (d.active)? 1 : 0.3 )
       .on('click', (event, d) => this.empire_service.toggle_faction( d.faction.name ) );
 
 
