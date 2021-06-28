@@ -26,7 +26,7 @@ export class HomeComponent implements AfterViewInit {
     });
   }
 
-  update_svg() {
+  private update_svg() {
     if( this.data === null  ) return;
 
     // transform
@@ -44,6 +44,7 @@ export class HomeComponent implements AfterViewInit {
     this.update_chart();
     this.update_legend();
   }
+
   private update_legend() {
     const legend_meta = new LegendaMeta();
 
