@@ -14,6 +14,7 @@ export class HomeComponent implements AfterViewInit {
   @ViewChild('legend') legend !: ElementRef<HTMLElement>;
 
   private chart_data !: ChartData[];
+  private legend_data !: any[];
 
   constructor(
     private empire_service: FwEmpiresService
@@ -23,8 +24,12 @@ export class HomeComponent implements AfterViewInit {
     this.empire_service.chart_data$.subscribe( chart_data => {
       this.chart_data = chart_data;
       this.update_chart();
-      this.update_legend();
     });
+
+    this.empire_service.legend_data$.subscribe( legend_data => {
+      this.legend_data = legend_data;
+      this.update_legend();
+    })
   }
 
   private update_legend() {
@@ -32,12 +37,7 @@ export class HomeComponent implements AfterViewInit {
 
     const enter = d3.select( this.legend.nativeElement )
       .selectAll('text')
-      .data( [
-        { faction: { name: 'Minmatar', color: '#653834' }, active: true },
-        { faction: { name: 'Amarr', color: '#7f6c50' }, active: true },
-        { faction: { name: 'Caldari', color: '#4a6c7f' }, active: false },
-        { faction: { name: 'Gallente', color: '#366565' }, active: true },
-      ] )
+      .data( this.legend_data )
       .enter()
 
     enter.append('text')
@@ -57,6 +57,12 @@ export class HomeComponent implements AfterViewInit {
       .attr('fill', d => d.faction.color )
       .attr('x', d => legend_meta.x_pos() )
       .attr('y', d => legend_meta.y_scale( d.faction.name ) as number - 30 )
+
+    d3.select( this.legend.nativeElement )
+      .selectAll('text')
+      .data( this.legend_data )
+      .transition()
+      .attr('opacity', d => (d.active)? 1 : 0.3 )
   }
 
   private update_chart() {

@@ -10,13 +10,20 @@ export class FwEmpiresService {
   private data !: EmpireData[];
   private selected_factions: string[] = [ 'Minmatar', 'Amarr', 'Caldari', 'Gallente' ];
   public chart_data$: BehaviorSubject<ChartData[]> = new BehaviorSubject<ChartData[]>( [] );
+  public legend_data$: BehaviorSubject<any[]> = new BehaviorSubject<any[]>( [] );
 
   constructor(
     private eve_http: EveHttpService
   ) {
     this.fetch_data().subscribe( raw_data => {
       this.data = raw_data.map( this.enhance_raw_empire_data )
-      this.chart_data$.next( this.chart_data )
+      this.chart_data$.next( this.chart_data );
+      this.legend_data$.next( [
+        { faction: { name: 'Minmatar', color: '#653834' }, active: true },
+        { faction: { name: 'Amarr', color: '#7f6c50' }, active: true },
+        { faction: { name: 'Caldari', color: '#4a6c7f' }, active: true },
+        { faction: { name: 'Gallente', color: '#366565' }, active: true },
+      ] );
     });
   }
 
@@ -27,6 +34,12 @@ export class FwEmpiresService {
     this.selected_factions.push( faction )
 
     this.chart_data$.next( this.chart_data );
+    this.legend_data$.next( [
+      { faction: { name: 'Minmatar', color: '#653834' }, active: true },
+      { faction: { name: 'Amarr', color: '#7f6c50' }, active: true },
+      { faction: { name: 'Caldari', color: '#4a6c7f' }, active: false },
+      { faction: { name: 'Gallente', color: '#366565' }, active: true },
+    ] );
   }
 
   private get chart_data(): ChartData[] {
