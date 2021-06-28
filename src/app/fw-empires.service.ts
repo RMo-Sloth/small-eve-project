@@ -7,14 +7,8 @@ import { ChartData } from './interfaces/ChartData.interface';
   providedIn: 'root'
 })
 export class FwEmpiresService {
-  public data$: BehaviorSubject<EmpireData[] | null> = new BehaviorSubject<EmpireData[] | null>( null );
-  public data !: EmpireData[];
-  public selected_factions: string[] = [
-    'Minmatar',
-    'Amarr',
-    'Caldari',
-    'Gallente'
-  ];
+  private data !: EmpireData[];
+  private selected_factions: string[] = [ 'Minmatar', 'Amarr', 'Caldari', 'Gallente' ];
   public chart_data$: BehaviorSubject<ChartData[]> = new BehaviorSubject<ChartData[]>( [] );
 
   constructor(
@@ -22,11 +16,11 @@ export class FwEmpiresService {
   ) {
     this.fetch_data().subscribe( raw_data => {
       this.data = raw_data.map( this.enhance_raw_empire_data )
-      this.data$.next( this.data );
+      this.chart_data$.next( this.chart_data )
     });
   }
 
-  public get chart_data(): ChartData[] {
+  private get chart_data(): ChartData[] {
     return this.data.map( empire => {
       return {
         faction: {

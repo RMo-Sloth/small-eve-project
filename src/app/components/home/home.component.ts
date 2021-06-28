@@ -20,11 +20,9 @@ export class HomeComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit(): void {
-    this.empire_service.data$.subscribe( data => {
-      if( data ) {
-        this.chart_data = this.empire_service.chart_data;
-        this.update_svg();
-      }
+    this.empire_service.chart_data$.subscribe( chart_data => {
+      this.chart_data = chart_data;
+      this.update_svg();
     });
   }
 
