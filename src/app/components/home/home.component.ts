@@ -22,7 +22,25 @@ export class HomeComponent implements AfterViewInit {
     this.empire_service.chart_data$.subscribe( this.update_chart.bind(this) );
     this.empire_service.legend_data$.subscribe( this.update_legend.bind(this) );
     this.empire_service.title_data$.subscribe( title => {
-      console.log( title )
+      d3.select( this.title.nativeElement )
+      .selectAll('text')
+      .data( [title] )
+      .enter()
+      .append('text')
+      .text( d => d )
+      .style('fill', 'white')
+      .attr('font-size', 75 )
+      .attr( 'x', '50%' )
+      .attr( 'y', 175 )
+      .attr( 'text-anchor', 'middle' )
+      ;
+
+      d3.select( this.title.nativeElement )
+      .selectAll('text')
+      .data( [title] )
+      .transition()
+      .text( d => d )
+      ;
     });
   }
 
