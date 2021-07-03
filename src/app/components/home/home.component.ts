@@ -10,6 +10,7 @@ import { ChartData } from 'src/app/interfaces/ChartData.interface';
 })
 export class HomeComponent implements AfterViewInit {
   @ViewChild('graph') graph !: ElementRef<HTMLElement>;
+  @ViewChild('title') title !: ElementRef<HTMLElement>;
   @ViewChild('chart') chart !: ElementRef<HTMLElement>;
   @ViewChild('legend') legend !: ElementRef<HTMLElement>;
 
@@ -67,36 +68,34 @@ export class HomeComponent implements AfterViewInit {
 
   private update_chart() {
     const chart = new BarChartMeta( this.chart_data );
+    const bars = d3.select(this.chart.nativeElement)
+      .selectAll('rect')
+      .data(this.chart_data)
+      ;
 
-    const enter = d3.select( this.chart.nativeElement )
-    .selectAll('rect')
-    .data( this.chart_data )
+    bars
     .enter()
-
-    enter.append( 'rect' )
+    .append( 'rect' )
     .attr('width', () => chart.x_scale.bandwidth() as number )
     .attr( 'x', d => chart.x_scale( d.faction.name ) as number )
     .attr( 'y', d => chart.y_pos( d.value ) )
     .attr('height', d => chart.y_scale( d.value ) )
     .attr( 'fill', d => d.faction.color )
+    ;
 
-    const exit = d3.select( this.chart.nativeElement )
-    .selectAll('rect')
-    .data( this.chart_data )
+    bars
     .exit()
+    .remove()
+    ;
 
-    exit.remove()
-
-    const update = d3.select( this.chart.nativeElement )
-    .selectAll('rect')
-    .data( this.chart_data )
+    bars
     .transition()
-
-    update.attr('width', () => chart.x_scale.bandwidth() as number )
+    .attr('width', () => chart.x_scale.bandwidth() as number )
     .attr( 'x', d => chart.x_scale( d.faction.name ) as number )
     .attr( 'y', d => chart.y_pos( d.value ) )
     .attr('height', d => chart.y_scale( d.value ) )
     .attr( 'fill', d => d.faction.color )
+    ;
   }
 
 }
@@ -134,7 +133,7 @@ class LegendaMeta {
   constructor() {}
 
   public get y_scale() {
-    return d3.scaleBand(  )
+    return d3.scaleBand()
       .paddingInner( 0.1 )
       .domain( [
         'Minmatar',
