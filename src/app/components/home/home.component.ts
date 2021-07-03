@@ -21,6 +21,9 @@ export class HomeComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.empire_service.chart_data$.subscribe( this.update_chart.bind(this) );
     this.empire_service.legend_data$.subscribe( this.update_legend.bind(this) );
+    this.empire_service.title_data$.subscribe( title => {
+      console.log( title )
+    });
   }
 
   private update_legend( legend_data: any[] ) {

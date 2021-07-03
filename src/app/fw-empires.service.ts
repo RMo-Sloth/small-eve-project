@@ -8,9 +8,15 @@ import { ChartData } from './interfaces/ChartData.interface';
 })
 export class FwEmpiresService {
   private data !: EmpireData[];
+  // handle faction logic separately???
   private selected_factions: string[] = [ 'Minmatar', 'Amarr', 'Caldari', 'Gallente' ];
+  // handle data logic separately???
+  private current_type: 'systems_controlled' = 'systems_controlled';
+  // private period ( default to week )
+  //
   public chart_data$: BehaviorSubject<ChartData[]> = new BehaviorSubject<ChartData[]>( [] );
   public legend_data$: BehaviorSubject<any[]> = new BehaviorSubject<any[]>( [] );
+  public title_data$: BehaviorSubject<string> = new BehaviorSubject<string>( '' );
 
   constructor(
     private eve_http: EveHttpService
@@ -24,6 +30,7 @@ export class FwEmpiresService {
         { faction: { name: 'Caldari', color: '#4a6c7f' }, active: true },
         { faction: { name: 'Gallente', color: '#366565' }, active: true },
       ] );
+      this.title_data$.next( this.title );
     });
   }
 
@@ -35,6 +42,11 @@ export class FwEmpiresService {
 
     this.chart_data$.next( this.chart_data );
     this.legend_data$.next( this.legend_data );
+    this.title_data$.next( this.title );
+  }
+
+  public get title(): string {
+    return 'Systems Controlled'
   }
 
   private get legend_data() {
@@ -53,7 +65,7 @@ export class FwEmpiresService {
           name: empire.faction,
           color: empire.color
         },
-        value: empire.systems_controlled
+        value: empire[this.current_type]
       }
     })
     .filter( empire => this.selected_factions.includes( empire.faction.name ) );
