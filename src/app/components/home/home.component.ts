@@ -35,35 +35,35 @@ export class HomeComponent implements AfterViewInit {
 
   private update_legend() {
     const legend_meta = new LegendaMeta();
+    const legend = d3.select( this.legend.nativeElement )
+    .selectAll('text')
+    .data( this.legend_data )
+    ;
 
-    const enter = d3.select( this.legend.nativeElement )
-      .selectAll('text')
-      .data( this.legend_data )
-      .enter()
+    legend.enter()
+    .append('text')
+    .text( d => d.faction.name )
+    .style('fill', 'white')
+    .style( 'cursor', 'pointer' )
+    .attr('x', d => legend_meta.x_pos() + 60 )
+    .attr('y', d => legend_meta.y_scale( d.faction.name ) as number )
+    .attr('font-size', 50 )
+    .attr('opacity', d => (d.active)? 1 : 0.3 )
+    .on('click', (event, d) => this.empire_service.toggle_faction( d.faction.name ) );
+    ;
 
-    enter.append('text')
-      .text( d => d.faction.name )
-      .style('fill', 'white')
-      .style( 'cursor', 'pointer' )
-      .attr('x', d => legend_meta.x_pos() + 60 )
-      .attr('y', d => legend_meta.y_scale( d.faction.name ) as number )
-      .attr('font-size', 50 )
-      .attr('opacity', d => (d.active)? 1 : 0.3 )
-      .on('click', (event, d) => this.empire_service.toggle_faction( d.faction.name ) );
+    legend.enter()
+    .append( 'rect' )
+    .attr( 'height', 30 )
+    .attr( 'width', 30 )
+    .attr('fill', d => d.faction.color )
+    .attr('x', d => legend_meta.x_pos() )
+    .attr('y', d => legend_meta.y_scale( d.faction.name ) as number - 30 )
+    ;
 
-
-    enter.append( 'rect' )
-      .attr( 'height', 30 )
-      .attr( 'width', 30 )
-      .attr('fill', d => d.faction.color )
-      .attr('x', d => legend_meta.x_pos() )
-      .attr('y', d => legend_meta.y_scale( d.faction.name ) as number - 30 )
-
-    d3.select( this.legend.nativeElement )
-      .selectAll('text')
-      .data( this.legend_data )
-      .transition()
-      .attr('opacity', d => (d.active)? 1 : 0.3 )
+    legend.transition()
+    .attr('opacity', d => (d.active)? 1 : 0.3 )
+    ;
   }
 
   private update_chart() {
