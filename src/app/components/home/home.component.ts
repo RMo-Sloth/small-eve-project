@@ -14,30 +14,20 @@ export class HomeComponent implements AfterViewInit {
   @ViewChild('chart') chart !: ElementRef<HTMLElement>;
   @ViewChild('legend') legend !: ElementRef<HTMLElement>;
 
-  private chart_data !: ChartData[];
-  private legend_data !: any[];
-
   constructor(
     private empire_service: FwEmpiresService
   ) {}
 
   ngAfterViewInit(): void {
-    this.empire_service.chart_data$.subscribe( chart_data => {
-      this.chart_data = chart_data;
-      this.update_chart();
-    });
-
-    this.empire_service.legend_data$.subscribe( legend_data => {
-      this.legend_data = legend_data;
-      this.update_legend();
-    })
+    this.empire_service.chart_data$.subscribe( this.update_chart.bind(this) );
+    this.empire_service.legend_data$.subscribe( this.update_legend.bind(this) );
   }
 
-  private update_legend() {
+  private update_legend( legend_data: any[] ) {
     const legend_meta = new LegendaMeta();
     const legend = d3.select( this.legend.nativeElement )
     .selectAll('text')
-    .data( this.legend_data )
+    .data( legend_data )
     ;
 
     legend.enter()
@@ -66,11 +56,11 @@ export class HomeComponent implements AfterViewInit {
     ;
   }
 
-  private update_chart() {
-    const chart = new BarChartMeta( this.chart_data );
+  private update_chart( chart_data: ChartData[] ) {
+    const chart = new BarChartMeta( chart_data );
     const bars = d3.select(this.chart.nativeElement)
       .selectAll('rect')
-      .data(this.chart_data)
+      .data( chart_data )
       ;
 
     bars
