@@ -13,6 +13,7 @@ export class HomeComponent implements AfterViewInit {
   @ViewChild('title') title !: ElementRef<HTMLElement>;
   @ViewChild('chart') chart !: ElementRef<HTMLElement>;
   @ViewChild('legend') legend !: ElementRef<HTMLElement>;
+  @ViewChild('datasets') datasets !: ElementRef<HTMLElement>;
 
   constructor(
     private empire_service: FwEmpiresService
@@ -42,6 +43,29 @@ export class HomeComponent implements AfterViewInit {
       .text( d => d )
       ;
     });
+
+
+    // dataset
+    const area = new SvgArea( 0, 650, 600, 1000 );
+    const x_scale = d3.scaleBand()
+    .paddingInner( 0.1 )
+    .domain( ['systems_controlled', 'pilots', '3', '4'] )
+    .range([area.left, area.right ])
+    ;
+
+
+    d3.select( this.datasets.nativeElement )
+    .selectAll('circle')
+    .data( ['systems_controlled', 'pilots', '3', '4'] )
+    .enter()
+    .append( 'circle' )
+    .style('cursor', 'pointer')
+    .attr('fill', 'red' )
+    .attr('r', 60)
+    .attr( 'cy', () => area.top + ( area.bottom - area.top ) / 2 + 30 )
+    .attr( 'cx', (d, i) => { return x_scale( d ) as number + 0.5 * x_scale.bandwidth() })
+    .on( 'click', (event, d) => { console.log(d) }) // handle event by updating data in service
+    ;
   }
 
   private update_legend( legend_data: any[] ) {
@@ -59,8 +83,8 @@ export class HomeComponent implements AfterViewInit {
     .attr('x', d => legend_meta.x_pos() + 60 )
     .attr('y', d => legend_meta.y_scale( d.faction.name ) as number )
     .attr('font-size', 50 )
-    .attr('opacity', d => (d.active)? 1 : 0.3 )
-    .on('click', (event, d) => this.empire_service.toggle_faction( d.faction.name ) );
+    .attr('opacity', d => (d.active) ? 1 : 0.3 )
+    .on('click', (event, d) => this.empire_service.toggle_faction( d.faction.name ) )
     ;
 
     legend.enter()
@@ -162,7 +186,7 @@ class LegendaMeta {
 }
 
 class SvgArea {
-  private padding: number = 20;
+  private padding: number = 50;
 
   constructor(
     private x1: number,
