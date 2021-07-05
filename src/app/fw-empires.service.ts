@@ -11,7 +11,8 @@ export class FwEmpiresService {
   // handle faction logic separately???
   private selected_factions: string[] = [ 'Minmatar', 'Amarr', 'Caldari', 'Gallente' ];
   // handle data logic separately???
-  private current_type: 'systems_controlled' = 'systems_controlled';
+  public _current_type: 'systems_controlled' | 'pilots' = 'systems_controlled';
+  public title: string = 'Systems Controlled';
   // private period ( default to week )
   //
   public chart_data$: BehaviorSubject<ChartData[]> = new BehaviorSubject<ChartData[]>( [] );
@@ -34,6 +35,24 @@ export class FwEmpiresService {
     });
   }
 
+  public set current_type( type: 'systems_controlled' | 'pilots' ) {
+
+    if( type === 'systems_controlled') {
+      this.title ='Systems Controlled';
+      this._current_type = type;
+    } else if( type === 'pilots' ) {
+      this.title ='Pilots';
+      this._current_type = type;
+    } else console.error( `${type} is not a valid type` )
+
+    this.chart_data$.next( this.chart_data );
+    this.title_data$.next( this.title );
+  }
+
+  public get current_type(): 'systems_controlled' | 'pilots' {
+    return this._current_type;
+  }
+
   public toggle_faction( faction: string): void {
     if( this.selected_factions.includes( faction ) )
       this.selected_factions = this.selected_factions.filter( value => value !== faction );
@@ -43,10 +62,6 @@ export class FwEmpiresService {
     this.chart_data$.next( this.chart_data );
     this.legend_data$.next( this.legend_data );
     this.title_data$.next( this.title );
-  }
-
-  public get title(): string {
-    return 'Systems Controlled'
   }
 
   private get legend_data() {

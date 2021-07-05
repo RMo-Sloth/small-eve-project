@@ -64,7 +64,7 @@ export class HomeComponent implements AfterViewInit {
     .attr('r', 60)
     .attr( 'cy', () => area.top + ( area.bottom - area.top ) / 2 + 30 )
     .attr( 'cx', (d, i) => { return x_scale( d ) as number + 0.5 * x_scale.bandwidth() })
-    .on( 'click', (event, d) => { console.log(d) }) // handle event by updating data in service
+    .on( 'click', (event, d) => { this.empire_service.current_type = d as 'systems_controlled' })
     ;
   }
 
