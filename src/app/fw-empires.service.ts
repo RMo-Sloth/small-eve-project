@@ -10,7 +10,7 @@ import { ChartData } from './interfaces/ChartData.interface';
 export class FwEmpiresService {
   public _current_type: 'systems_controlled' | 'pilots' = 'systems_controlled';
   public title: string = 'Systems Controlled';
-  private selected_factions: Faction[] = [];
+  private factions: Faction[] = [];
   // private period ( default to week )
   public chart_data$: BehaviorSubject<ChartData[]> = new BehaviorSubject<ChartData[]>( [] );
   public title_data$: BehaviorSubject<string> = new BehaviorSubject<string>( '' );
@@ -22,7 +22,7 @@ export class FwEmpiresService {
       this.fetch_data().subscribe( raw_data => {
         this.init_factions( raw_data )
         this.chart_data$.next( this.chart_data );
-        this.legend_data$.next( this.selected_factions );
+        this.legend_data$.next( this.factions );
         this.title_data$.next( this.title );
       });
     }
@@ -46,17 +46,17 @@ export class FwEmpiresService {
 
     // detect factions
     public toggle_faction( name: string): void {
-      const faction = this.selected_factions.find( faction => faction.name === name ) as Faction;
+      const faction = this.factions.find( faction => faction.name === name ) as Faction;
       faction.enabled = !faction.enabled;
 
       this.chart_data$.next( this.chart_data );
-      this.legend_data$.next( this.selected_factions );
+      this.legend_data$.next( this.factions );
       this.title_data$.next( this.title );
     }
     //
 
     private get chart_data(): ChartData[] {
-      return this.selected_factions
+      return this.factions
       .filter( faction => faction.enabled )
       .map( faction => ({
           faction: {
@@ -74,7 +74,7 @@ export class FwEmpiresService {
   }
 
   private init_factions( raw_data: RawEmpireData[] ) {
-    this.selected_factions = raw_data.map( raw_data =>  this.init_faction( raw_data ) as Faction );
+    this.factions = raw_data.map( raw_data =>  this.init_faction( raw_data ) as Faction );
   }
 
   private init_faction( raw_data: RawEmpireData ): Faction | undefined { // need somekind of Building pattern
