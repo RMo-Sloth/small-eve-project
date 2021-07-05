@@ -14,6 +14,7 @@ export class FwEmpiresService {
   // private period ( default to week )
   public chart_data$: BehaviorSubject<ChartData[]> = new BehaviorSubject<ChartData[]>( [] );
   public title_data$: BehaviorSubject<string> = new BehaviorSubject<string>( '' );
+  public legend_data$: BehaviorSubject<Faction[]> = new BehaviorSubject<Faction[]>( [] );
 
   constructor(
     private eve_http: EveHttpService
@@ -21,7 +22,7 @@ export class FwEmpiresService {
         this.fetch_data().subscribe( raw_data => {
         this.data = raw_data.map( this.enhance_raw_empire_data )
         this.chart_data$.next( this.chart_data );
-        this.legend_data$.next( this.legend_data );
+        this.legend_data$.next( this.selected_factions );
         this.title_data$.next( this.title );
       });
     }
@@ -44,7 +45,7 @@ export class FwEmpiresService {
     }
 
     // detect factions
-    private selected_factions: Faction[] = [
+    private selected_factions: Faction[] = [ // this is misnamed now / later
       new MinmatarFaction(),
       new AmarrFaction(),
       new CaldariFaction(),
@@ -55,19 +56,9 @@ export class FwEmpiresService {
       faction.enabled = !faction.enabled;
 
       this.chart_data$.next( this.chart_data );
-      this.legend_data$.next( this.legend_data );
+      this.legend_data$.next( this.selected_factions );
       this.title_data$.next( this.title );
     }
-    //
-
-    // legend_data$
-    public legend_data$: BehaviorSubject<any[]> = new BehaviorSubject<any[]>( [] );
-    private get legend_data() {
-      return this.selected_factions.map( faction => (
-        { faction: faction, active: faction.enabled }
-      ));
-    }
-
     //
 
     private get chart_data(): ChartData[] {

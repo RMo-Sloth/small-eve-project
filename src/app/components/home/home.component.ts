@@ -77,27 +77,27 @@ export class HomeComponent implements AfterViewInit {
 
     legend.enter()
     .append('text')
-    .text( d => d.faction.name )
+    .text( d => d.name )
     .style('fill', 'white')
     .style( 'cursor', 'pointer' )
     .attr('x', d => legend_meta.x_pos() + 60 )
-    .attr('y', d => legend_meta.y_scale( d.faction.name ) as number )
+    .attr('y', d => legend_meta.y_scale( d.name ) as number )
     .attr('font-size', 50 )
-    .attr('opacity', d => (d.active) ? 1 : 0.3 )
-    .on('click', (event, d) => this.empire_service.toggle_faction( d.faction.name ) )
+    .attr('opacity', d => d.enabled ? 1 : 0.3 )
+    .on('click', (event, d) => this.empire_service.toggle_faction( d.name ) )
     ;
 
     legend.enter()
     .append( 'rect' )
     .attr( 'height', 30 )
     .attr( 'width', 30 )
-    .attr('fill', d => d.faction.color )
+    .attr('fill', d => d.color )
     .attr('x', d => legend_meta.x_pos() )
-    .attr('y', d => legend_meta.y_scale( d.faction.name ) as number - 30 )
+    .attr('y', d => legend_meta.y_scale( d.name ) as number - 30 )
     ;
 
     legend.transition()
-    .attr('opacity', d => (d.active)? 1 : 0.3 )
+    .attr('opacity', d => d.enabled ? 1 : 0.3 )
     ;
   }
 
