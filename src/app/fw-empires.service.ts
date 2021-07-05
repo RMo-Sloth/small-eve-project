@@ -8,26 +8,28 @@ import { ChartData } from './interfaces/ChartData.interface';
   providedIn: 'root'
 })
 export class FwEmpiresService {
-  public _current_type: 'systems_controlled' | 'pilots' = 'systems_controlled';
-  public title: string = 'Systems Controlled';
   private factions: Faction[] = [];
-  // private period ( default to week )
   public chart_data$: BehaviorSubject<ChartData[]> = new BehaviorSubject<ChartData[]>( [] );
   public title_data$: BehaviorSubject<string> = new BehaviorSubject<string>( '' );
   public legend_data$: BehaviorSubject<Faction[]> = new BehaviorSubject<Faction[]>( [] );
 
   constructor(
     private eve_http: EveHttpService
-    ) {
-      this.fetch_data().subscribe( raw_data => {
-        this.init_factions( raw_data )
-        this.chart_data$.next( this.chart_data );
-        this.legend_data$.next( this.factions );
-        this.title_data$.next( this.title );
-      });
-    }
+  ) {
+    this.fetch_data().subscribe( raw_data => {
+      const manager = new FactionManager( raw_data );
+      this.factions = manager.factions;
+      this.chart_data$.next( this.chart_data );
+      this.legend_data$.next( this.factions );
+      this.title_data$.next( this.title );
+    });
+  }
 
   // this._current_type should be handled in Faction???
+  public _current_type: 'systems_controlled' | 'pilots' = 'systems_controlled';
+  public title: string = 'Systems Controlled';
+  // private period ( default to week )
+
   public set current_type( type: 'systems_controlled' | 'pilots' ) {
     if( type === 'systems_controlled') {
       this.title ='Systems Controlled';
@@ -69,13 +71,24 @@ export class FwEmpiresService {
     ;
   }
 
-  // init factions | need somekind of Building pattern
   private fetch_data(): Observable<RawEmpireData[]> {
     return this.eve_http.get('https://esi.evetech.net/latest/fw/stats') as Observable<RawEmpireData[]>;
   }
 
-  private init_factions( raw_data: RawEmpireData[] ) {
-    this.factions = raw_data.map( raw_data =>  this.init_faction( raw_data ) as Faction );
+}
+
+
+
+
+
+
+
+
+class FactionManager {
+  public factions: Faction[];
+
+  constructor( raw_data: RawEmpireData[] ) {
+    this.factions = raw_data.map( raw_data => this.init_faction( raw_data ) as Faction );
   }
 
   private init_faction( raw_data: RawEmpireData ): Faction | undefined {
@@ -92,9 +105,9 @@ export class FwEmpiresService {
         return undefined;
     }
   }
-  //
-
 }
+
+
 
 
 export interface RawEmpireData {
