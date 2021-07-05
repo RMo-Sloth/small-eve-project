@@ -47,10 +47,8 @@ export class FwEmpiresService {
   }
 
   // detect factions
-  public toggle_faction( name: string): void {
-    const faction = this.manager.factions.find( faction => faction.name === name ) as Faction;
-    faction.enabled = !faction.enabled;
-
+  public toggle_faction( name: "Minmatar" | "Amarr" | "Caldari" | "Gallente"): void {
+    this.manager.toggle( name );
     this.chart_data$.next( this.chart_data );
     this.legend_data$.next( this.manager.factions );
     this.title_data$.next( this.title );
@@ -103,6 +101,15 @@ class FactionManager {
       default:
         return undefined;
     }
+  }
+
+  public toggle( name: 'Minmatar' | 'Amarr' | 'Caldari' | 'Gallente' ) {
+    const faction = this.find( name );
+    faction.enabled = !faction.enabled;
+  }
+
+  private find( name : 'Minmatar' | 'Amarr' | 'Caldari' | 'Gallente' ) {
+    return this.factions.find( faction => faction.name === name ) as Faction;
   }
 }
 
