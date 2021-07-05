@@ -3,6 +3,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { EveHttpService } from './eve-http.service';
 import { ChartData } from './interfaces/ChartData.interface';
 
+//  TODO: Encapsulate record
+
 @Injectable({
   providedIn: 'root'
 })
@@ -20,7 +22,7 @@ export class FwEmpiresService {
     private eve_http: EveHttpService
     ) {
         this.fetch_data().subscribe( raw_data => {
-        this.data = raw_data.map( this.enhance_raw_empire_data )
+        this.data = raw_data.map( this.enhance_raw_empire_data.bind(this) )
         this.chart_data$.next( this.chart_data );
         this.legend_data$.next( this.selected_factions );
         this.title_data$.next( this.title );
@@ -45,12 +47,7 @@ export class FwEmpiresService {
     }
 
     // detect factions
-    private selected_factions: Faction[] = [ // this is misnamed now / later
-      new MinmatarFaction(),
-      new AmarrFaction(),
-      new CaldariFaction(),
-      new GallenteFaction()
-    ];
+    private selected_factions: Faction[] = [];
     public toggle_faction( name: string): void {
       const faction = this.selected_factions.find( faction => faction.name === name ) as Faction;
       faction.enabled = !faction.enabled;
@@ -82,37 +79,35 @@ export class FwEmpiresService {
     return this.eve_http.get('https://esi.evetech.net/latest/fw/stats') as Observable<RawEmpireData[]>;
   }
   private enhance_raw_empire_data(empire: RawEmpireData) {
-    const result: EmpireData = {
-      faction: 'Amarr',
-      color: 'black',
+    const faction = this.init_faction( empire );
+    if( faction === undefined )
+      throw Error('Failed to find faction')
+
+    this.selected_factions.push( faction );
+
+    return {
+      faction: faction.name,
+      color: faction.color,
       kills: empire.kills,
       pilots: empire.pilots,
       systems_controlled: empire.systems_controlled,
       victory_points: empire.victory_points
     };
+  }
 
+  private init_faction( empire: RawEmpireData ): Faction | undefined { // need somekind of Building pattern
     switch (empire.faction_id) {
       case 500001:
-        result.faction = 'Caldari';
-        result.color = '#4a6c7f';
-        break;
+        return new CaldariFaction();
       case 500002:
-        result.faction = 'Minmatar';
-        result.color = '#653834';
-        break;
+        return new MinmatarFaction();
       case 500003:
-        result.faction = 'Amarr';
-        result.color = '#7f6c50';
-        break;
+        return new AmarrFaction();
       case 500004:
-        result.faction = 'Gallente';
-        result.color = '#366565';
-        break;
+        return new GallenteFaction();
       default:
-        console.error(`Faction with faction_id of ${empire.faction_id} is not recognised`);
+        return undefined;
     }
-
-    return result;
   }
   //
 
