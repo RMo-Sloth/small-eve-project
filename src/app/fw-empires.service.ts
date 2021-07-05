@@ -27,48 +27,49 @@ export class FwEmpiresService {
       });
     }
 
-    public set current_type( type: 'systems_controlled' | 'pilots' ) {
-      if( type === 'systems_controlled') {
-        this.title ='Systems Controlled';
-        this._current_type = type;
-      } else if( type === 'pilots' ) {
-        this.title ='Pilots';
-        this._current_type = type;
-      } else console.error( `${type} is not a valid type` )
+  // this._current_type should be handled in Faction???
+  public set current_type( type: 'systems_controlled' | 'pilots' ) {
+    if( type === 'systems_controlled') {
+      this.title ='Systems Controlled';
+      this._current_type = type;
+    } else if( type === 'pilots' ) {
+      this.title ='Pilots';
+      this._current_type = type;
+    } else console.error( `${type} is not a valid type` )
 
-      this.chart_data$.next( this.chart_data );
-      this.title_data$.next( this.title );
-    }
-
-    public get current_type(): 'systems_controlled' | 'pilots' {
-      return this._current_type;
-    }
-
-    // detect factions
-    public toggle_faction( name: string): void {
-      const faction = this.factions.find( faction => faction.name === name ) as Faction;
-      faction.enabled = !faction.enabled;
-
-      this.chart_data$.next( this.chart_data );
-      this.legend_data$.next( this.factions );
-      this.title_data$.next( this.title );
-    }
-    //
-
-    private get chart_data(): ChartData[] {
-      return this.factions
-      .filter( faction => faction.enabled )
-      .map( faction => ({
-          faction: {
-            name: faction.name,
-            color: faction.color
-          },
-          value: faction.statistics.get( this.current_type )
-      }) )
-      ;
-
+    this.chart_data$.next( this.chart_data );
+    this.title_data$.next( this.title );
   }
-  // init factions
+
+  public get current_type(): 'systems_controlled' | 'pilots' {
+    return this._current_type;
+  }
+
+  // detect factions
+  public toggle_faction( name: string): void {
+    const faction = this.factions.find( faction => faction.name === name ) as Faction;
+    faction.enabled = !faction.enabled;
+
+    this.chart_data$.next( this.chart_data );
+    this.legend_data$.next( this.factions );
+    this.title_data$.next( this.title );
+  }
+  //
+
+  private get chart_data(): ChartData[] {
+    return this.factions
+    .filter( faction => faction.enabled )
+    .map( faction => ({
+        faction: {
+          name: faction.name,
+          color: faction.color
+        },
+        value: faction.statistics.get( this.current_type )
+    }) )
+    ;
+  }
+
+  // init factions | need somekind of Building pattern
   private fetch_data(): Observable<RawEmpireData[]> {
     return this.eve_http.get('https://esi.evetech.net/latest/fw/stats') as Observable<RawEmpireData[]>;
   }
@@ -77,7 +78,7 @@ export class FwEmpiresService {
     this.factions = raw_data.map( raw_data =>  this.init_faction( raw_data ) as Faction );
   }
 
-  private init_faction( raw_data: RawEmpireData ): Faction | undefined { // need somekind of Building pattern
+  private init_faction( raw_data: RawEmpireData ): Faction | undefined {
     switch (raw_data.faction_id) {
       case 500001:
         return new CaldariFaction( raw_data );
