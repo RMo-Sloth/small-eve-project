@@ -9,19 +9,17 @@ import { ChartData } from './interfaces/ChartData.interface';
 export class FwEmpiresService {
   private data !: EmpireData[];
   // handle faction logic separately???
-  private selected_factions: string[] = [ 'Minmatar', 'Amarr', 'Caldari', 'Gallente' ];
   // handle data logic separately???
   public _current_type: 'systems_controlled' | 'pilots' = 'systems_controlled';
   public title: string = 'Systems Controlled';
   // private period ( default to week )
-  //
   public chart_data$: BehaviorSubject<ChartData[]> = new BehaviorSubject<ChartData[]>( [] );
   public title_data$: BehaviorSubject<string> = new BehaviorSubject<string>( '' );
 
   constructor(
     private eve_http: EveHttpService
     ) {
-      this.fetch_data().subscribe( raw_data => {
+        this.fetch_data().subscribe( raw_data => {
         this.data = raw_data.map( this.enhance_raw_empire_data )
         this.chart_data$.next( this.chart_data );
         this.legend_data$.next( this.legend_data );
@@ -29,9 +27,7 @@ export class FwEmpiresService {
       });
     }
 
-
     public set current_type( type: 'systems_controlled' | 'pilots' ) {
-
       if( type === 'systems_controlled') {
         this.title ='Systems Controlled';
         this._current_type = type;
@@ -48,20 +44,22 @@ export class FwEmpiresService {
       return this._current_type;
     }
 
+    // detect factions
+    private selected_factions: string[] = [ 'Minmatar', 'Amarr', 'Caldari', 'Gallente' ];
     public toggle_faction( faction: string): void {
       if( this.selected_factions.includes( faction ) )
-      this.selected_factions = this.selected_factions.filter( value => value !== faction );
+        this.selected_factions = this.selected_factions.filter( value => value !== faction );
       else
-      this.selected_factions.push( faction )
+        this.selected_factions.push( faction )
 
       this.chart_data$.next( this.chart_data );
       this.legend_data$.next( this.legend_data );
       this.title_data$.next( this.title );
     }
+    //
 
     // legend_data$
     public legend_data$: BehaviorSubject<any[]> = new BehaviorSubject<any[]>( [] );
-
     private get legend_data() {
       return [
         { faction: { name: 'Minmatar', color: '#653834' }, active: this.selected_factions.includes( 'Minmatar' ) },
@@ -85,7 +83,10 @@ export class FwEmpiresService {
     })
     .filter( empire => this.selected_factions.includes( empire.faction.name ) );
   }
-
+  // init factions
+  private fetch_data(): Observable<RawEmpireData[]> {
+    return this.eve_http.get('https://esi.evetech.net/latest/fw/stats') as Observable<RawEmpireData[]>;
+  }
   private enhance_raw_empire_data(empire: RawEmpireData) {
     const result: EmpireData = {
       faction: 'Amarr',
@@ -119,12 +120,25 @@ export class FwEmpiresService {
 
     return result;
   }
-
-  private fetch_data(): Observable<RawEmpireData[]> {
-    return this.eve_http.get('https://esi.evetech.net/latest/fw/stats') as Observable<RawEmpireData[]>;
-  }
+  //
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 interface RawEmpireData {
   faction_id: number;
