@@ -8,7 +8,7 @@ import { ChartData } from './interfaces/ChartData.interface';
   providedIn: 'root'
 })
 export class FwEmpiresService {
-  private factions: Faction[] = [];
+  private manager !: FactionManager;
   public chart_data$: BehaviorSubject<ChartData[]> = new BehaviorSubject<ChartData[]>( [] );
   public title_data$: BehaviorSubject<string> = new BehaviorSubject<string>( '' );
   public legend_data$: BehaviorSubject<Faction[]> = new BehaviorSubject<Faction[]>( [] );
@@ -17,10 +17,9 @@ export class FwEmpiresService {
     private eve_http: EveHttpService
   ) {
     this.fetch_data().subscribe( raw_data => {
-      const manager = new FactionManager( raw_data );
-      this.factions = manager.factions;
+      this.manager = new FactionManager( raw_data );
       this.chart_data$.next( this.chart_data );
-      this.legend_data$.next( this.factions );
+      this.legend_data$.next( this.manager.factions );
       this.title_data$.next( this.title );
     });
   }
@@ -49,17 +48,17 @@ export class FwEmpiresService {
 
   // detect factions
   public toggle_faction( name: string): void {
-    const faction = this.factions.find( faction => faction.name === name ) as Faction;
+    const faction = this.manager.factions.find( faction => faction.name === name ) as Faction;
     faction.enabled = !faction.enabled;
 
     this.chart_data$.next( this.chart_data );
-    this.legend_data$.next( this.factions );
+    this.legend_data$.next( this.manager.factions );
     this.title_data$.next( this.title );
   }
   //
 
   private get chart_data(): ChartData[] {
-    return this.factions
+    return this.manager.factions
     .filter( faction => faction.enabled )
     .map( faction => ({
         faction: {
