@@ -6,6 +6,7 @@ export class FactionManager {
   public factions: Faction[];
   public update$: BehaviorSubject<null> = new BehaviorSubject( null );
   private _type: 'systems_controlled' | 'pilots' = 'systems_controlled';
+  // private period ( default to week )
 
   constructor( raw_data: RawEmpireData[] ) {
     this.factions = raw_data.map( raw_data => this.init_faction( raw_data ) as Faction );
@@ -33,6 +34,7 @@ export class FactionManager {
     this.update$.next( null );
   }
 
+  public title = 'Systems Controlled';
 
   public set type( type: 'systems_controlled' | 'pilots') {
     this._type = type;

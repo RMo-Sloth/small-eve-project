@@ -23,23 +23,19 @@ export class FwEmpiresService {
       this.manager.update$.subscribe( () => {
         this.chart_data$.next(this.chart_data);
         this.legend_data$.next(this.manager.factions);
-        this.title_data$.next(this.title);
+        this.title_data$.next(this.manager.title);
       });
     });
   }
 
-  // private period ( default to week )
-
   // move to FactionManager:
-  // move out title
-  public title: string = 'Systems Controlled';
   public set current_type( type: 'systems_controlled' | 'pilots' ) {
-    this.manager.type = type;
     if( type === 'systems_controlled') {
-      this.title ='Systems Controlled';
+      this.manager.title ='Systems Controlled';
     } else if( type === 'pilots' ) {
-      this.title ='Pilots';
+      this.manager.title ='Pilots';
     } else console.error( `${type} is not a valid type` )
+    this.manager.type = type;
   }
 
   public toggle_faction( name: "Minmatar" | "Amarr" | "Caldari" | "Gallente"): void {
