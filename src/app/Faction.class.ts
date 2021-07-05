@@ -4,8 +4,13 @@ export class Faction {
   public name !: 'Minmatar' | 'Amarr' | 'Caldari' | 'Gallente';
   public color !: string;
   public enabled: boolean = true;
-  public data!: FactionDataAdapter;
-} // todo add constructor with rawdata
+  public statistics: FactionDataAdapter;
+
+  constructor( raw_data: RawEmpireData ) {
+    this.statistics = new FactionDataAdapter( raw_data );
+  }
+}
+
 
 export class MinmatarFaction extends Faction {
   public color = '#653834';

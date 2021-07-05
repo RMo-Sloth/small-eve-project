@@ -93,16 +93,16 @@ export class FwEmpiresService {
     };
   }
 
-  private init_faction( empire: RawEmpireData ): Faction | undefined { // need somekind of Building pattern
-    switch (empire.faction_id) {
+  private init_faction( raw_data: RawEmpireData ): Faction | undefined { // need somekind of Building pattern
+    switch (raw_data.faction_id) {
       case 500001:
-        return new CaldariFaction();
+        return new CaldariFaction( raw_data );
       case 500002:
-        return new MinmatarFaction();
+        return new MinmatarFaction( raw_data );
       case 500003:
-        return new AmarrFaction();
+        return new AmarrFaction( raw_data );
       case 500004:
-        return new GallenteFaction();
+        return new GallenteFaction( raw_data );
       default:
         return undefined;
     }
