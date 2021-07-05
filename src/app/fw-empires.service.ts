@@ -23,7 +23,7 @@ export class FwEmpiresService {
     private eve_http: EveHttpService
     ) {
         this.fetch_data().subscribe( raw_data => {
-        this.data = raw_data.map( this.enhance_raw_empire_data.bind(this) )
+        this.data = raw_data.map( this.enhance_raw_empire_data.bind(this) );
         this.chart_data$.next( this.chart_data );
         this.legend_data$.next( this.selected_factions );
         this.title_data$.next( this.title );
@@ -67,7 +67,7 @@ export class FwEmpiresService {
             name: empire.faction.name,
             color: empire.faction.color
           },
-          value: empire[this.current_type]
+          value: empire[this.current_type] // access this from faction
       }) )
       ;
 
@@ -112,19 +112,19 @@ export class FwEmpiresService {
 }
 
 
-interface RawEmpireData {
+export interface RawEmpireData {
   faction_id: number;
   kills: {
     last_week: number;
-    total: number,
-    yesterday: number
+    total: number;
+    yesterday: number;
   },
   pilots: number,
-  systems_controlled: number,
+  systems_controlled: number;
   victory_points: {
     last_week: number;
-    total: number,
-    yesterday: number
+    total: number;
+    yesterday: number;
   }
 }
 
