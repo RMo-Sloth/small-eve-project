@@ -21,39 +21,29 @@ export class FwEmpiresService {
     this.fetch_data().subscribe( raw_data => {
       this.manager = new FactionManager( raw_data );
       this.manager.update$.subscribe( () => {
-        this.update();
+        this.chart_data$.next(this.chart_data);
+        this.legend_data$.next(this.manager.factions);
+        this.title_data$.next(this.title);
       });
     });
   }
 
-  // this._current_type should be handled in Faction???
-  public _current_type: 'systems_controlled' | 'pilots' = 'systems_controlled';
-  public title: string = 'Systems Controlled';
   // private period ( default to week )
 
+  // move to FactionManager:
+  // move out title
+  public title: string = 'Systems Controlled';
   public set current_type( type: 'systems_controlled' | 'pilots' ) {
+    this.manager.current_type = type;
     if( type === 'systems_controlled') {
       this.title ='Systems Controlled';
-      this._current_type = type;
     } else if( type === 'pilots' ) {
       this.title ='Pilots';
-      this._current_type = type;
     } else console.error( `${type} is not a valid type` )
-    this.update();
-  }
-
-  public get current_type(): 'systems_controlled' | 'pilots' {
-    return this._current_type;
   }
 
   public toggle_faction( name: "Minmatar" | "Amarr" | "Caldari" | "Gallente"): void {
     this.manager.toggle( name );
-  }
-
-  private update() {
-    this.chart_data$.next(this.chart_data);
-    this.legend_data$.next(this.manager.factions);
-    this.title_data$.next(this.title);
   }
 
   private get chart_data(): ChartData[] {
@@ -64,7 +54,7 @@ export class FwEmpiresService {
           name: faction.name,
           color: faction.color
         },
-        value: faction.statistics.get( this.current_type )
+        value: faction.statistics.get( this.manager.current_type )
     }) )
     ;
   }
