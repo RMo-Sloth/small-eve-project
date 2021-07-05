@@ -1,6 +1,6 @@
 import { BehaviorSubject } from "rxjs";
 import { AmarrFaction, CaldariFaction, Faction, GallenteFaction, MinmatarFaction } from "./Faction.class";
-import { RawEmpireData } from "./fw-empires.service";
+import { RawEmpireData } from "./RawEmpireData.interface";
 
 export class FactionManager {
   public factions: Faction[];

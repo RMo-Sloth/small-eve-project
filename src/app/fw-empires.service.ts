@@ -4,6 +4,7 @@ import { EveHttpService } from './eve-http.service';
 import { Faction } from './Faction.class';
 import { FactionManager } from './FactionManager.class';
 import { ChartData } from './interfaces/ChartData.interface';
+import { RawEmpireData } from './RawEmpireData.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -72,20 +73,4 @@ export class FwEmpiresService {
     return this.eve_http.get('https://esi.evetech.net/latest/fw/stats') as Observable<RawEmpireData[]>;
   }
 
-}
-
-export interface RawEmpireData {
-  faction_id: number;
-  kills: {
-    last_week: number;
-    total: number;
-    yesterday: number;
-  },
-  pilots: number,
-  systems_controlled: number;
-  victory_points: {
-    last_week: number;
-    total: number;
-    yesterday: number;
-  }
 }

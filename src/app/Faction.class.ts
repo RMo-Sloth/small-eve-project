@@ -1,4 +1,4 @@
-import { RawEmpireData } from "./fw-empires.service";
+import { RawEmpireData } from "./RawEmpireData.interface";
 
 export class Faction {
   public name !: 'Minmatar' | 'Amarr' | 'Caldari' | 'Gallente';
