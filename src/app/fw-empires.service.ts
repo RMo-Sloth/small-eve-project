@@ -18,9 +18,9 @@ export class FwEmpiresService {
   ) {
     this.fetch_data().subscribe( raw_data => {
       this.manager = new FactionManager( raw_data );
-      this.chart_data$.next( this.chart_data );
-      this.legend_data$.next( this.manager.factions );
-      this.title_data$.next( this.title );
+      this.manager.update$.subscribe( () => {
+        this.update();
+      });
     });
   }
 
@@ -37,23 +37,22 @@ export class FwEmpiresService {
       this.title ='Pilots';
       this._current_type = type;
     } else console.error( `${type} is not a valid type` )
-
-    this.chart_data$.next( this.chart_data );
-    this.title_data$.next( this.title );
+    this.update();
   }
 
   public get current_type(): 'systems_controlled' | 'pilots' {
     return this._current_type;
   }
 
-  // detect factions
   public toggle_faction( name: "Minmatar" | "Amarr" | "Caldari" | "Gallente"): void {
     this.manager.toggle( name );
-    this.chart_data$.next( this.chart_data );
-    this.legend_data$.next( this.manager.factions );
-    this.title_data$.next( this.title );
   }
-  //
+
+  private update() {
+    this.chart_data$.next(this.chart_data);
+    this.legend_data$.next(this.manager.factions);
+    this.title_data$.next(this.title);
+  }
 
   private get chart_data(): ChartData[] {
     return this.manager.factions
@@ -83,9 +82,11 @@ export class FwEmpiresService {
 
 class FactionManager {
   public factions: Faction[];
+  public update$: BehaviorSubject<null> = new BehaviorSubject( null );
 
   constructor( raw_data: RawEmpireData[] ) {
     this.factions = raw_data.map( raw_data => this.init_faction( raw_data ) as Faction );
+    this.update$.next(null);
   }
 
   private init_faction( raw_data: RawEmpireData ): Faction | undefined {
@@ -106,6 +107,7 @@ class FactionManager {
   public toggle( name: 'Minmatar' | 'Amarr' | 'Caldari' | 'Gallente' ) {
     const faction = this.find( name );
     faction.enabled = !faction.enabled;
+    this.update$.next( null );
   }
 
   private find( name : 'Minmatar' | 'Amarr' | 'Caldari' | 'Gallente' ) {
