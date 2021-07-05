@@ -34,7 +34,13 @@ export class FactionManager {
     this.update$.next( null );
   }
 
-  public title = 'Systems Controlled';
+  public get title(): string {
+    if( this.type === 'systems_controlled')
+      return 'Systems Controlled';
+    else if( this.type === 'pilots' )
+      return 'Pilots';
+    else return 'No valid title found'
+  }
 
   public set type( type: 'systems_controlled' | 'pilots') {
     this._type = type;
