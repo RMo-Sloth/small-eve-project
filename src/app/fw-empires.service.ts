@@ -59,19 +59,16 @@ export class FwEmpiresService {
     //
 
     private get chart_data(): ChartData[] {
-      return this.data.map( empire => {
-        return {
+      return this.data
+      .filter( empire => empire.faction.enabled )
+      .map( empire => ({
           faction: {
-            name: empire.faction,
-            color: empire.color
+            name: empire.faction.name,
+            color: empire.faction.color
           },
           value: empire[this.current_type]
-        }
-      })
-      .filter( empire => this.selected_factions.some( faction => {
-        return faction.enabled && faction.name === empire.faction.name;
-      }) );
-
+      }) )
+      ;
 
   }
   // init factions
@@ -86,7 +83,7 @@ export class FwEmpiresService {
     this.selected_factions.push( faction );
 
     return {
-      faction: faction.name,
+      faction: faction,
       color: faction.color,
       kills: empire.kills,
       pilots: empire.pilots,
@@ -188,7 +185,7 @@ interface RawEmpireData {
 }
 
 export interface EmpireData {
-  faction: 'Minmatar' | 'Caldari' | 'Gallente' | 'Amarr',
+  faction: Faction,
   color: string;
   kills: {
     last_week: number;
