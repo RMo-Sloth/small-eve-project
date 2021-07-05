@@ -16,70 +16,70 @@ export class FwEmpiresService {
   // private period ( default to week )
   //
   public chart_data$: BehaviorSubject<ChartData[]> = new BehaviorSubject<ChartData[]>( [] );
-  public legend_data$: BehaviorSubject<any[]> = new BehaviorSubject<any[]>( [] );
   public title_data$: BehaviorSubject<string> = new BehaviorSubject<string>( '' );
 
   constructor(
     private eve_http: EveHttpService
-  ) {
-    this.fetch_data().subscribe( raw_data => {
-      this.data = raw_data.map( this.enhance_raw_empire_data )
+    ) {
+      this.fetch_data().subscribe( raw_data => {
+        this.data = raw_data.map( this.enhance_raw_empire_data )
+        this.chart_data$.next( this.chart_data );
+        this.legend_data$.next( this.legend_data );
+        this.title_data$.next( this.title );
+      });
+    }
+
+
+    public set current_type( type: 'systems_controlled' | 'pilots' ) {
+
+      if( type === 'systems_controlled') {
+        this.title ='Systems Controlled';
+        this._current_type = type;
+      } else if( type === 'pilots' ) {
+        this.title ='Pilots';
+        this._current_type = type;
+      } else console.error( `${type} is not a valid type` )
+
       this.chart_data$.next( this.chart_data );
-      this.legend_data$.next( [
-        { faction: { name: 'Minmatar', color: '#653834' }, active: true },
-        { faction: { name: 'Amarr', color: '#7f6c50' }, active: true },
-        { faction: { name: 'Caldari', color: '#4a6c7f' }, active: true },
-        { faction: { name: 'Gallente', color: '#366565' }, active: true },
-      ] );
       this.title_data$.next( this.title );
-    });
-  }
+    }
 
-  public set current_type( type: 'systems_controlled' | 'pilots' ) {
+    public get current_type(): 'systems_controlled' | 'pilots' {
+      return this._current_type;
+    }
 
-    if( type === 'systems_controlled') {
-      this.title ='Systems Controlled';
-      this._current_type = type;
-    } else if( type === 'pilots' ) {
-      this.title ='Pilots';
-      this._current_type = type;
-    } else console.error( `${type} is not a valid type` )
-
-    this.chart_data$.next( this.chart_data );
-    this.title_data$.next( this.title );
-  }
-
-  public get current_type(): 'systems_controlled' | 'pilots' {
-    return this._current_type;
-  }
-
-  public toggle_faction( faction: string): void {
-    if( this.selected_factions.includes( faction ) )
+    public toggle_faction( faction: string): void {
+      if( this.selected_factions.includes( faction ) )
       this.selected_factions = this.selected_factions.filter( value => value !== faction );
-    else
+      else
       this.selected_factions.push( faction )
 
-    this.chart_data$.next( this.chart_data );
-    this.legend_data$.next( this.legend_data );
-    this.title_data$.next( this.title );
-  }
+      this.chart_data$.next( this.chart_data );
+      this.legend_data$.next( this.legend_data );
+      this.title_data$.next( this.title );
+    }
 
-  private get legend_data() {
-    return [
-      { faction: { name: 'Minmatar', color: '#653834' }, active: this.selected_factions.includes( 'Minmatar' ) },
-      { faction: { name: 'Amarr', color: '#7f6c50' }, active:  this.selected_factions.includes( 'Amarr' ) },
-      { faction: { name: 'Caldari', color: '#4a6c7f' }, active: this.selected_factions.includes( 'Caldari' ) },
-      { faction: { name: 'Gallente', color: '#366565' }, active: this.selected_factions.includes( 'Gallente' ) },
-    ]
-  }
+    // legend_data$
+    public legend_data$: BehaviorSubject<any[]> = new BehaviorSubject<any[]>( [] );
 
-  private get chart_data(): ChartData[] {
-    return this.data.map( empire => {
-      return {
-        faction: {
-          name: empire.faction,
-          color: empire.color
-        },
+    private get legend_data() {
+      return [
+        { faction: { name: 'Minmatar', color: '#653834' }, active: this.selected_factions.includes( 'Minmatar' ) },
+        { faction: { name: 'Amarr', color: '#7f6c50' }, active:  this.selected_factions.includes( 'Amarr' ) },
+        { faction: { name: 'Caldari', color: '#4a6c7f' }, active: this.selected_factions.includes( 'Caldari' ) },
+        { faction: { name: 'Gallente', color: '#366565' }, active: this.selected_factions.includes( 'Gallente' ) },
+      ]
+    }
+
+    //
+
+    private get chart_data(): ChartData[] {
+      return this.data.map( empire => {
+        return {
+          faction: {
+            name: empire.faction,
+            color: empire.color
+          },
         value: empire[this.current_type]
       }
     })
