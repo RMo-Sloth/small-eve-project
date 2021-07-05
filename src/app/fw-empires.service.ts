@@ -34,7 +34,7 @@ export class FwEmpiresService {
   // move out title
   public title: string = 'Systems Controlled';
   public set current_type( type: 'systems_controlled' | 'pilots' ) {
-    this.manager.current_type = type;
+    this.manager.type = type;
     if( type === 'systems_controlled') {
       this.title ='Systems Controlled';
     } else if( type === 'pilots' ) {
@@ -54,7 +54,7 @@ export class FwEmpiresService {
           name: faction.name,
           color: faction.color
         },
-        value: faction.statistics.get( this.manager.current_type )
+        value: faction.statistics.get( this.manager.type )
     }) )
     ;
   }

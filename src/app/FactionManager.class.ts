@@ -5,7 +5,7 @@ import { RawEmpireData } from "./RawEmpireData.interface";
 export class FactionManager {
   public factions: Faction[];
   public update$: BehaviorSubject<null> = new BehaviorSubject( null );
-  private _current_type: 'systems_controlled' | 'pilots' = 'systems_controlled';
+  private _type: 'systems_controlled' | 'pilots' = 'systems_controlled';
 
   constructor( raw_data: RawEmpireData[] ) {
     this.factions = raw_data.map( raw_data => this.init_faction( raw_data ) as Faction );
@@ -34,13 +34,13 @@ export class FactionManager {
   }
 
 
-  public set current_type( type: 'systems_controlled' | 'pilots') {
-    this._current_type = type;
+  public set type( type: 'systems_controlled' | 'pilots') {
+    this._type = type;
     this.update$.next( null );
   }
 
-  public get current_type(): 'systems_controlled' | 'pilots' {
-    return this._current_type;
+  public get type(): 'systems_controlled' | 'pilots' {
+    return this._type;
   }
   private find( name : 'Minmatar' | 'Amarr' | 'Caldari' | 'Gallente' ) {
     return this.factions.find( faction => faction.name === name ) as Faction;
