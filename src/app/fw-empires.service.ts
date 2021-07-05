@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { EveHttpService } from './eve-http.service';
+import { AmarrFaction, CaldariFaction, Faction, GallenteFaction, MinmatarFaction } from './Faction.class';
 import { ChartData } from './interfaces/ChartData.interface';
 
 //  TODO: Encapsulate record
@@ -10,8 +11,8 @@ import { ChartData } from './interfaces/ChartData.interface';
 })
 export class FwEmpiresService {
   private data !: EmpireData[];
-  // handle data logic separately???
-  public _current_type: 'systems_controlled' | 'pilots' = 'systems_controlled';
+  // data may become Faction[]
+  public _current_type: 'systems_controlled' | 'pilots' = 'systems_controlled'; // e.g. Faction.get('systems')
   public title: string = 'Systems Controlled';
   // private period ( default to week )
   public chart_data$: BehaviorSubject<ChartData[]> = new BehaviorSubject<ChartData[]>( [] );
@@ -109,63 +110,6 @@ export class FwEmpiresService {
   //
 
 }
-
-
-// Faction
-class Faction {
-  public name !: 'Minmatar' | 'Amarr' | 'Caldari' | 'Gallente';
-  public color !: string;
-  public enabled: boolean = true;
-
-  constructor() {}
-}
-
-class MinmatarFaction extends Faction {
-  public color = '#653834';
-
-  constructor() {
-    super();
-    this.name = 'Minmatar';
-  }
-}
-
-class CaldariFaction extends Faction {
-  public color = '#4a6c7f';
-
-  constructor() {
-    super();
-    this.name = 'Caldari';
-  }
-}
-
-class AmarrFaction extends Faction {
-  public color = '#7f6c50';
-
-  constructor() {
-    super();
-    this.name = 'Amarr';
-  }
-}
-
-class GallenteFaction extends Faction {
-  public color = '#366565';
-
-  constructor() {
-    super();
-    this.name = 'Gallente';
-  }
-}
-//
-
-
-
-
-
-
-
-
-
-
 
 
 interface RawEmpireData {
