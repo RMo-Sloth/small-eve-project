@@ -112,20 +112,3 @@ export interface RawEmpireData {
     yesterday: number;
   }
 }
-
-export interface EmpireData {
-  faction: Faction,
-  color: string;
-  kills: {
-    last_week: number;
-    total: number,
-    yesterday: number
-  },
-  pilots: number,
-  systems_controlled: number,
-  victory_points: {
-    last_week: number;
-    total: number,
-    yesterday: number
-  }
-}
