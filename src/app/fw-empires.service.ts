@@ -8,7 +8,6 @@ import { ChartData } from './interfaces/ChartData.interface';
 })
 export class FwEmpiresService {
   private data !: EmpireData[];
-  // handle faction logic separately???
   // handle data logic separately???
   public _current_type: 'systems_controlled' | 'pilots' = 'systems_controlled';
   public title: string = 'Systems Controlled';
@@ -62,10 +61,10 @@ export class FwEmpiresService {
     public legend_data$: BehaviorSubject<any[]> = new BehaviorSubject<any[]>( [] );
     private get legend_data() {
       return [
-        { faction: { name: 'Minmatar', color: '#653834' }, active: this.selected_factions.includes( 'Minmatar' ) },
-        { faction: { name: 'Amarr', color: '#7f6c50' }, active:  this.selected_factions.includes( 'Amarr' ) },
-        { faction: { name: 'Caldari', color: '#4a6c7f' }, active: this.selected_factions.includes( 'Caldari' ) },
-        { faction: { name: 'Gallente', color: '#366565' }, active: this.selected_factions.includes( 'Gallente' ) },
+        { faction: new MinmatarFaction(), active: this.selected_factions.includes( 'Minmatar' ) },
+        { faction: new AmarrFaction(), active: this.selected_factions.includes( 'Amarr' ) },
+        { faction: new CaldariFaction(), active: this.selected_factions.includes( 'Caldari' ) },
+        { faction: new GallenteFaction(), active: this.selected_factions.includes( 'Gallente' ) },
       ]
     }
 
@@ -125,9 +124,50 @@ export class FwEmpiresService {
 }
 
 
+// Faction
+class Faction {
+  public name !: 'Minmatar' | 'Amarr' | 'Caldari' | 'Gallente';
+  public color !: string;
 
+  constructor() {}
+}
 
+class MinmatarFaction extends Faction {
+  public color = '#653834';
 
+  constructor() {
+    super();
+    this.name = 'Minmatar';
+  }
+}
+
+class CaldariFaction extends Faction {
+  public color = '#4a6c7f';
+
+  constructor() {
+    super();
+    this.name = 'Caldari';
+  }
+}
+
+class AmarrFaction extends Faction {
+  public color = '#7f6c50';
+
+  constructor() {
+    super();
+    this.name = 'Amarr';
+  }
+}
+
+class GallenteFaction extends Faction {
+  public color = '#366565';
+
+  constructor() {
+    super();
+    this.name = 'Gallente';
+  }
+}
+//
 
 
 
