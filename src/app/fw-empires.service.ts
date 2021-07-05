@@ -44,12 +44,15 @@ export class FwEmpiresService {
     }
 
     // detect factions
-    private selected_factions: string[] = [ 'Minmatar', 'Amarr', 'Caldari', 'Gallente' ];
-    public toggle_faction( faction: string): void {
-      if( this.selected_factions.includes( faction ) )
-        this.selected_factions = this.selected_factions.filter( value => value !== faction );
-      else
-        this.selected_factions.push( faction )
+    private selected_factions: Faction[] = [
+      new MinmatarFaction(),
+      new AmarrFaction(),
+      new CaldariFaction(),
+      new GallenteFaction()
+    ];
+    public toggle_faction( name: string): void {
+      const faction = this.selected_factions.find( faction => faction.name === name ) as Faction;
+      faction.enabled = !faction.enabled;
 
       this.chart_data$.next( this.chart_data );
       this.legend_data$.next( this.legend_data );
@@ -60,12 +63,9 @@ export class FwEmpiresService {
     // legend_data$
     public legend_data$: BehaviorSubject<any[]> = new BehaviorSubject<any[]>( [] );
     private get legend_data() {
-      return [
-        { faction: new MinmatarFaction(), active: this.selected_factions.includes( 'Minmatar' ) },
-        { faction: new AmarrFaction(), active: this.selected_factions.includes( 'Amarr' ) },
-        { faction: new CaldariFaction(), active: this.selected_factions.includes( 'Caldari' ) },
-        { faction: new GallenteFaction(), active: this.selected_factions.includes( 'Gallente' ) },
-      ]
+      return this.selected_factions.map( faction => (
+        { faction: faction, active: faction.enabled }
+      ));
     }
 
     //
@@ -77,10 +77,14 @@ export class FwEmpiresService {
             name: empire.faction,
             color: empire.color
           },
-        value: empire[this.current_type]
-      }
-    })
-    .filter( empire => this.selected_factions.includes( empire.faction.name ) );
+          value: empire[this.current_type]
+        }
+      })
+      .filter( empire => this.selected_factions.some( faction => {
+        return faction.enabled && faction.name === empire.faction.name;
+      }) );
+
+
   }
   // init factions
   private fetch_data(): Observable<RawEmpireData[]> {
@@ -128,6 +132,7 @@ export class FwEmpiresService {
 class Faction {
   public name !: 'Minmatar' | 'Amarr' | 'Caldari' | 'Gallente';
   public color !: string;
+  public enabled: boolean = true;
 
   constructor() {}
 }
