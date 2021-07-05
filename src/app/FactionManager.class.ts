@@ -43,8 +43,12 @@ export class FactionManager {
   }
 
   public set type( type: 'systems_controlled' | 'pilots') {
-    this._type = type;
-    this.update$.next( null );
+    if( type !== 'systems_controlled' && type !== 'pilots' )
+      console.error( `${type} is not a valid type` );
+    else {
+      this._type = type;
+      this.update$.next( null );
+    }
   }
 
   public get type(): 'systems_controlled' | 'pilots' {

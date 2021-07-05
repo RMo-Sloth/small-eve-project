@@ -28,11 +28,7 @@ export class FwEmpiresService {
     });
   }
 
-  // move to FactionManager:
   public set current_type( type: 'systems_controlled' | 'pilots' ) {
-    if( type === 'systems_controlled' || type === 'pilots' ) {
-      //
-    } else console.error( `${type} is not a valid type` )
     this.manager.type = type;
   }
 
