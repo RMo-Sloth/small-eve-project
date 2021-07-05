@@ -4,14 +4,13 @@ import { EveHttpService } from './eve-http.service';
 import { AmarrFaction, CaldariFaction, Faction, GallenteFaction, MinmatarFaction } from './Faction.class';
 import { ChartData } from './interfaces/ChartData.interface';
 
-//  TODO: Encapsulate record
-
 @Injectable({
   providedIn: 'root'
 })
 export class FwEmpiresService {
   public _current_type: 'systems_controlled' | 'pilots' = 'systems_controlled';
   public title: string = 'Systems Controlled';
+  private selected_factions: Faction[] = [];
   // private period ( default to week )
   public chart_data$: BehaviorSubject<ChartData[]> = new BehaviorSubject<ChartData[]>( [] );
   public title_data$: BehaviorSubject<string> = new BehaviorSubject<string>( '' );
@@ -20,7 +19,8 @@ export class FwEmpiresService {
   constructor(
     private eve_http: EveHttpService
     ) {
-        this.fetch_data().subscribe( raw_data => {
+      this.fetch_data().subscribe( raw_data => {
+        this.init_factions( raw_data )
         this.chart_data$.next( this.chart_data );
         this.legend_data$.next( this.selected_factions );
         this.title_data$.next( this.title );
@@ -45,7 +45,6 @@ export class FwEmpiresService {
     }
 
     // detect factions
-    private selected_factions: Faction[] = [];
     public toggle_faction( name: string): void {
       const faction = this.selected_factions.find( faction => faction.name === name ) as Faction;
       faction.enabled = !faction.enabled;
@@ -73,21 +72,9 @@ export class FwEmpiresService {
   private fetch_data(): Observable<RawEmpireData[]> {
     return this.eve_http.get('https://esi.evetech.net/latest/fw/stats') as Observable<RawEmpireData[]>;
   }
-  private enhance_raw_empire_data(empire: RawEmpireData) {
-    const faction = this.init_faction( empire );
-    if( faction === undefined )
-      throw Error('Failed to find faction')
 
-    this.selected_factions.push( faction );
-
-    return {
-      faction: faction,
-      color: faction.color,
-      kills: empire.kills,
-      pilots: empire.pilots,
-      systems_controlled: empire.systems_controlled,
-      victory_points: empire.victory_points
-    };
+  private init_factions( raw_data: RawEmpireData[] ) {
+    this.selected_factions = raw_data.map( raw_data =>  this.init_faction( raw_data ) as Faction );
   }
 
   private init_faction( raw_data: RawEmpireData ): Faction | undefined { // need somekind of Building pattern
