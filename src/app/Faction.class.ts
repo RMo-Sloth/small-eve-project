@@ -48,7 +48,13 @@ class FactionDataAdapter {
     this._kills = data.kills;
   }
 
-  get( type: string ): number {
-    return 0;
+  get( type: 'systems_controlled' | 'pilots' ): number {
+    if( type === 'systems_controlled' )
+      return this._systems_controlled;
+
+    if( type === 'pilots' )
+      return this._pilots;
+
+    return 1000;
   }
 }

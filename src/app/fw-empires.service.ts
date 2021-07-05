@@ -10,9 +10,7 @@ import { ChartData } from './interfaces/ChartData.interface';
   providedIn: 'root'
 })
 export class FwEmpiresService {
-  private data !: EmpireData[];
-  // data may become Faction[]
-  public _current_type: 'systems_controlled' | 'pilots' = 'systems_controlled'; // e.g. Faction.get('systems')
+  public _current_type: 'systems_controlled' | 'pilots' = 'systems_controlled';
   public title: string = 'Systems Controlled';
   // private period ( default to week )
   public chart_data$: BehaviorSubject<ChartData[]> = new BehaviorSubject<ChartData[]>( [] );
@@ -23,7 +21,6 @@ export class FwEmpiresService {
     private eve_http: EveHttpService
     ) {
         this.fetch_data().subscribe( raw_data => {
-        this.data = raw_data.map( this.enhance_raw_empire_data.bind(this) );
         this.chart_data$.next( this.chart_data );
         this.legend_data$.next( this.selected_factions );
         this.title_data$.next( this.title );
@@ -60,14 +57,14 @@ export class FwEmpiresService {
     //
 
     private get chart_data(): ChartData[] {
-      return this.data
-      .filter( empire => empire.faction.enabled )
-      .map( empire => ({
+      return this.selected_factions
+      .filter( faction => faction.enabled )
+      .map( faction => ({
           faction: {
-            name: empire.faction.name,
-            color: empire.faction.color
+            name: faction.name,
+            color: faction.color
           },
-          value: empire[this.current_type] // access this from faction
+          value: faction.statistics.get( this.current_type )
       }) )
       ;
 
