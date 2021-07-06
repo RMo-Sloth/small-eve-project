@@ -12,8 +12,8 @@ import { RawEmpireData } from './RawEmpireData.interface';
 export class FwEmpiresService {
   private manager !: FactionManager;
   public chart_data$: BehaviorSubject<ChartData[]> = new BehaviorSubject<ChartData[]>( [] );
-  public title_data$: BehaviorSubject<string> = new BehaviorSubject<string>( '' );
   public legend_data$: BehaviorSubject<Faction[]> = new BehaviorSubject<Faction[]>( [] );
+  public data$: BehaviorSubject<any> = new BehaviorSubject<any>( { title: '' } );
 
   constructor(
     private eve_http: EveHttpService
@@ -21,9 +21,12 @@ export class FwEmpiresService {
     this.fetch_data().subscribe( raw_data => {
       this.manager = new FactionManager( raw_data );
       this.manager.update$.subscribe( () => {
+        const data  = {
+          title: this.manager.title,
+        }
+        this.data$.next( data );
         this.chart_data$.next(this.chart_data);
         this.legend_data$.next(this.manager.factions);
-        this.title_data$.next(this.manager.title);
       });
     });
   }

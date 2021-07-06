@@ -22,26 +22,8 @@ export class HomeComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.empire_service.chart_data$.subscribe( this.update_chart.bind(this) );
     this.empire_service.legend_data$.subscribe( this.update_legend.bind(this) );
-    this.empire_service.title_data$.subscribe( title => {
-      d3.select( this.title.nativeElement )
-      .selectAll('text')
-      .data( [title] )
-      .enter()
-      .append('text')
-      .text( d => d )
-      .style('fill', 'white')
-      .attr('font-size', 75 )
-      .attr( 'x', '50%' )
-      .attr( 'y', 175 )
-      .attr( 'text-anchor', 'middle' )
-      ;
-
-      d3.select( this.title.nativeElement )
-      .selectAll('text')
-      .data( [title] )
-      .transition()
-      .text( d => d )
-      ;
+    this.empire_service.data$.subscribe( data => {
+      this.update_title( data.title );
     });
 
 
@@ -66,6 +48,26 @@ export class HomeComponent implements AfterViewInit {
     .attr( 'cx', (d, i) => { return x_scale( d ) as number + 0.5 * x_scale.bandwidth() })
     .on( 'click', (event, d) => { this.empire_service.current_type = d as 'systems_controlled' })
     ;
+  }
+
+  private update_title( title: string ) {
+    d3.select(this.title.nativeElement)
+      .selectAll('text')
+      .data([title])
+      .enter()
+      .append('text')
+      .text(d => d)
+      .style('fill', 'white')
+      .attr('font-size', 75)
+      .attr('x', '50%')
+      .attr('y', 175)
+      .attr('text-anchor', 'middle');
+
+    d3.select(this.title.nativeElement)
+      .selectAll('text')
+      .data([title])
+      .transition()
+      .text(d => d);
   }
 
   private update_legend( legend_data: any[] ) {
