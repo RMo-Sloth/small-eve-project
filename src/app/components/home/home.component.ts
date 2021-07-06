@@ -3,6 +3,8 @@ import * as d3 from 'd3';
 import { FwEmpiresService } from 'src/app/fw-empires.service';
 import { ChartData } from 'src/app/interfaces/ChartData.interface';
 
+import { faBirthdayCake, faSkullCrossbones, faFighterJet, faGlobe } from '@fortawesome/free-solid-svg-icons';
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -14,6 +16,11 @@ export class HomeComponent implements AfterViewInit {
   @ViewChild('chart') chart !: ElementRef<HTMLElement>;
   @ViewChild('legend') legend !: ElementRef<HTMLElement>;
   @ViewChild('datasets') datasets !: ElementRef<HTMLElement>;
+
+  faSkullCrossbones = faSkullCrossbones;
+  faFighterJet = faFighterJet;
+  faGlobe = faGlobe;
+  faBirthdayCake = faBirthdayCake;
 
   constructor(
     private empire_service: FwEmpiresService
@@ -30,23 +37,34 @@ export class HomeComponent implements AfterViewInit {
     // dataset
     const area = new SvgArea( 0, 650, 600, 1000 );
     const x_scale = d3.scaleBand()
-    .paddingInner( 0.1 )
+    .paddingInner( 0.2 )
+    .paddingOuter( 0.5 )
     .domain( ['systems_controlled', 'pilots', '3', '4'] )
     .range([area.left, area.right ])
     ;
 
 
-    d3.select( this.datasets.nativeElement )
-    .selectAll('circle')
+    const svg = d3.select( this.datasets.nativeElement )
+    .selectAll('svg')
     .data( ['systems_controlled', 'pilots', '3', '4'] )
     .enter()
-    .append( 'circle' )
+    .append( 'svg' )
+    .attr( 'viewBox', '0 0 500 500' )
+    .attr( 'width', x_scale.bandwidth )
+    .attr( 'height', x_scale.bandwidth )
+    .attr( 'y', () => ((area.top + area.bottom) / 2) )
+    .attr( 'x', (d, i) => { return x_scale( d ) as number })
+
+  svg.append('rect')
+    .attr('width', 500)
+    .attr('height', 500)
     .style('cursor', 'pointer')
-    .attr('fill', 'red' )
-    .attr('r', 60)
-    .attr( 'cy', () => area.top + ( area.bottom - area.top ) / 2 + 30 )
-    .attr( 'cx', (d, i) => { return x_scale( d ) as number + 0.5 * x_scale.bandwidth() })
     .on( 'click', (event, d) => { this.empire_service.current_type = d as 'systems_controlled' })
+
+  svg.append( 'path' )
+    .attr( 'd', this.faGlobe.icon[4] as string )
+    .attr('fill', 'white' )
+    .style( 'pointer-events', 'none' )
     ;
   }
 
