@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { EveHttpService } from './eve-http.service';
-import { Faction } from './Faction.class';
 import { FactionManager } from './FactionManager.class';
 import { ChartData } from './interfaces/ChartData.interface';
 import { RawEmpireData } from './RawEmpireData.interface';
@@ -11,8 +10,7 @@ import { RawEmpireData } from './RawEmpireData.interface';
 })
 export class FwEmpiresService {
   private manager !: FactionManager;
-  public chart_data$: BehaviorSubject<ChartData[]> = new BehaviorSubject<ChartData[]>( [] );
-  public data$: BehaviorSubject<any> = new BehaviorSubject<any>( { title: '', factions: [] } );
+  public data$: BehaviorSubject<any> = new BehaviorSubject<any>( { title: '', factions: [], chart_data: [] } );
 
   constructor(
     private eve_http: EveHttpService
@@ -22,10 +20,10 @@ export class FwEmpiresService {
       this.manager.update$.subscribe( () => {
         const data  = {
           title: this.manager.title,
-          factions: this.manager.factions
+          factions: this.manager.factions,
+          chart_data: this.chart_data
         }
         this.data$.next( data );
-        this.chart_data$.next(this.chart_data);
       });
     });
   }
