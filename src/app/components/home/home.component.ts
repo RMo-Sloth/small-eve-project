@@ -37,32 +37,37 @@ export class HomeComponent implements AfterViewInit {
     // dataset
     const area = new SvgArea( 0, 650, 600, 1000 );
     const x_scale = d3.scaleBand()
-    .paddingInner( 0.2 )
+    .paddingInner( 0.5 )
     .paddingOuter( 0.5 )
-    .domain( ['systems_controlled', 'pilots', '3', '4'] )
+    .domain( ['systems_controlled', 'pilots', 'kills', 'victory_points'] )
     .range([area.left, area.right ])
     ;
 
 
     const svg = d3.select( this.datasets.nativeElement )
     .selectAll('svg')
-    .data( ['systems_controlled', 'pilots', '3', '4'] )
+    .data( [
+      {value: 'systems_controlled', icon: this.faGlobe.icon },
+      {value: 'pilots', icon: this.faFighterJet.icon},
+      {value: 'kills', icon: this.faSkullCrossbones.icon},
+      {value: 'victory_points', icon: this.faBirthdayCake.icon}
+    ] )
     .enter()
     .append( 'svg' )
-    .attr( 'viewBox', '0 0 500 500' )
+    .attr( 'viewBox', d => `0 0 ${d.icon[0]} ${d.icon[1]}` )
     .attr( 'width', x_scale.bandwidth )
     .attr( 'height', x_scale.bandwidth )
     .attr( 'y', () => ((area.top + area.bottom) / 2) )
-    .attr( 'x', (d, i) => { return x_scale( d ) as number })
+    .attr( 'x', (d, i) => { return x_scale( d .value ) as number })
 
   svg.append('rect')
-    .attr('width', 500)
-    .attr('height', 500)
+    .attr('width', '100%')
+    .attr('height', '100%')
     .style('cursor', 'pointer')
-    .on( 'click', (event, d) => { this.empire_service.current_type = d as 'systems_controlled' })
+    .on( 'click', (event, d) => { this.empire_service.current_type = d.value as 'systems_controlled' })
 
   svg.append( 'path' )
-    .attr( 'd', this.faGlobe.icon[4] as string )
+    .attr( 'd', d => d.icon[4] as string )
     .attr('fill', 'white' )
     .style( 'pointer-events', 'none' )
     ;
