@@ -63,6 +63,7 @@ export class HomeComponent implements AfterViewInit {
   svg.append('rect')
     .attr('width', '100%')
     .attr('height', '100%')
+    .attr('fill', 'transparent')
     .style('cursor', 'pointer')
     .on( 'click', (event, d) => { this.empire_service.current_type = d.value as 'systems_controlled' })
 

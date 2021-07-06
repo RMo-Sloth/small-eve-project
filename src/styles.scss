@@ -1,11 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
 html {
-  // background: black;
   // todo add image / video instead
   body {
     margin: 0px;
-  }
-  svg {
-    background: black;
+    background: url('./assets/faction-warfare.jpg');
+    background-attachment: fixed;
+    background-size: cover;
   }
 }
