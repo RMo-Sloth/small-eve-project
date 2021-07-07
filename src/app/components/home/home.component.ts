@@ -34,44 +34,63 @@ export class HomeComponent implements AfterViewInit {
     });
 
     this.update_dataset_selection();
+    window.setTimeout( () => {
+      this.update_type( 'pilots' )
+    })
   }
 
   private update_dataset_selection() {
     const area = new SvgArea( 0, 650, 600, 1000 );
+    const data: { value: string, icon: any }[] = [
+      { value: 'systems_controlled', icon: this.faGlobe.icon },
+      { value: 'pilots', icon: this.faFighterJet.icon },
+      { value: 'kills', icon: this.faSkullCrossbones.icon },
+      { value: 'victory_points', icon: this.faBirthdayCake.icon }
+    ];
     const x_scale = d3.scaleBand()
     .paddingInner( 0.5 )
     .paddingOuter( 0.5 )
-    .domain( ['systems_controlled', 'pilots', 'kills', 'victory_points'] )
+    .domain( data.map( data => data.value ))
     .range([area.left, area.right ])
     ;
 
     const svg = d3.select(this.datasets.nativeElement)
       .selectAll('svg')
-      .data([
-        { value: 'systems_controlled', icon: this.faGlobe.icon },
-        { value: 'pilots', icon: this.faFighterJet.icon },
-        { value: 'kills', icon: this.faSkullCrossbones.icon },
-        { value: 'victory_points', icon: this.faBirthdayCake.icon }
-      ])
+      .data( data )
       .enter()
       .append('svg')
       .attr('viewBox', d => `0 0 ${d.icon[0]} ${d.icon[1]}`)
       .attr('width', x_scale.bandwidth)
       .attr('height', x_scale.bandwidth)
       .attr('y', () => ((area.top + area.bottom) / 2))
-      .attr('x', (d, i) => { return x_scale(d.value) as number; });
+      .attr('x', (d, i) => { return x_scale(d.value) as number; })
+    ;
 
     svg.append('rect')
       .attr('width', '100%')
       .attr('height', '100%')
       .attr('fill', 'transparent')
       .style('cursor', 'pointer')
-      .on('click', (event, d) => { this.empire_service.current_type = d.value as 'systems_controlled'; });
+      .on('click', (event, d) => {
+        this.update_type( d.value )
+      });
 
-    svg.append('path')
+      ;
+
+      svg.append('path')
       .attr('d', d => d.icon[4] as string)
-      .attr('fill', 'white')
+      .attr('fill', 'grey')
       .style('pointer-events', 'none');
+    }
+
+  private update_type( selection: string ) {
+    this.empire_service.current_type = selection as 'systems_controlled';
+    d3.select( this.datasets.nativeElement )
+    .selectAll('svg>path')
+    .attr( 'fill', 'grey' )
+    .filter( (d: any) => d.value === selection )
+    .attr( 'fill', 'white' )
+    ;
   }
 
   private update_title( title: string ) {
