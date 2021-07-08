@@ -11,16 +11,15 @@ import { Faction } from 'src/app/Faction.class';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements AfterViewInit {
-  @ViewChild('graph') graph !: ElementRef<HTMLElement>;
   @ViewChild('title') title !: ElementRef<HTMLElement>;
   @ViewChild('chart') chart !: ElementRef<HTMLElement>;
   @ViewChild('legend') legend !: ElementRef<HTMLElement>;
   @ViewChild('datasets') datasets !: ElementRef<HTMLElement>;
 
-  faSkullCrossbones = faSkullCrossbones;
-  faFighterJet = faFighterJet;
-  faGlobe = faGlobe;
-  faBirthdayCake = faBirthdayCake;
+  private faSkullCrossbones = faSkullCrossbones;
+  private faFighterJet = faFighterJet;
+  private faGlobe = faGlobe;
+  private faBirthdayCake = faBirthdayCake;
 
   constructor(
     private empire_service: FwEmpiresService
@@ -84,7 +83,7 @@ export class HomeComponent implements AfterViewInit {
       .filter( (d: any) => d.value === data_2.selected_type )
       .attr( 'fill', 'white' )
       ;
-    }
+  }
 
 
   private update_type( selection: string ) {
@@ -186,7 +185,7 @@ export class HomeComponent implements AfterViewInit {
 
 // classes
 class BarChartMeta {
-  private area = new SvgArea( 0, 250, 500, 750 );
+  private area = new SvgArea( 0, 250, 600, 750 );
   private data: ChartDataHelper;
   constructor(
     chart_data: ChartData[]
