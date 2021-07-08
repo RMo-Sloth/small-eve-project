@@ -58,6 +58,9 @@ class FactionDataAdapter {
     if( type === 'kills' )
       return this._kills.last_week;
 
+    if( type === 'victory_points' )
+      return this._vicory_points.last_week;
+
     return 1000;
   }
 }
