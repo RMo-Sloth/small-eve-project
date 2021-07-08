@@ -114,7 +114,15 @@ export class HomeComponent implements AfterViewInit {
 
   private update_legend( legend_data: any[] ) {
     const area = new SvgArea( 600, 350, 1000, 650 );
-    const legend_meta = new LegendaMeta();
+    const y_scale = d3.scaleBand()
+        .paddingInner( 0.1 )
+        .domain( [
+          'Minmatar',
+          'Amarr',
+          'Caldari',
+          'Gallente'
+        ] )
+        .range([area.top + 25, area.bottom + 25])
     const legend = d3.select( this.legend.nativeElement )
     .selectAll('text')
     .data( legend_data )
@@ -126,7 +134,7 @@ export class HomeComponent implements AfterViewInit {
     .style('fill', 'white')
     .style( 'cursor', 'pointer' )
     .attr('x', d => area.left + 60 )
-    .attr('y', d => legend_meta.y_scale( d.name ) as number )
+    .attr('y', d => y_scale( d.name ) as number )
     .attr('font-size', 50 )
     .attr('opacity', d => d.enabled ? 1 : 0.3 )
     .on('click', (event, d) => this.empire_service.toggle_faction( d.name ) )
@@ -138,7 +146,7 @@ export class HomeComponent implements AfterViewInit {
     .attr( 'width', 30 )
     .attr('fill', d => d.color )
     .attr('x', d => area.left )
-    .attr('y', d => legend_meta.y_scale( d.name ) as number - 30 )
+    .attr('y', d => y_scale( d.name ) as number - 30 )
     ;
 
     legend.transition()
@@ -203,25 +211,6 @@ class BarChartMeta {
       .paddingInner( 0.1 )
       .domain( this.data.factions)
       .range([this.area.left, this.area.right])
-  }
-
-}
-//
-class LegendaMeta {
-  private area = new SvgArea( 600, 350, 1000, 650 );
-
-  constructor() {}
-
-  public get y_scale() {
-    return d3.scaleBand()
-      .paddingInner( 0.1 )
-      .domain( [
-        'Minmatar',
-        'Amarr',
-        'Caldari',
-        'Gallente'
-      ] )
-      .range([this.area.top + 25, this.area.bottom + 25])
   }
 
 }
