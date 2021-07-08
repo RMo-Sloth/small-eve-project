@@ -18,10 +18,11 @@ export class FwEmpiresService {
     this.fetch_data().subscribe( raw_data => {
       this.manager = new FactionManager( raw_data );
       this.manager.update$.subscribe( () => {
-        const data  = {
+        const data = {
           title: this.manager.title,
           factions: this.manager.factions,
-          chart_data: this.chart_data
+          chart_data: this.chart_data,
+          selected_type: this.manager.type
         }
         this.data$.next( data );
       });

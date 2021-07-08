@@ -13,6 +13,30 @@ export class FactionManager {
     this.update$.next(null);
   }
 
+  public get title(): string {
+    if( this.type === 'systems_controlled')
+      return 'Systems Controlled';
+    else if( this.type === 'pilots' )
+      return 'Pilots';
+    else return 'No valid title found'
+  }
+
+
+  public set type( type: 'systems_controlled' | 'pilots') {
+    if( type !== 'systems_controlled' && type !== 'pilots' )
+      console.error( `${type} is not a valid type` );
+    else {
+      this._type = type;
+      this.update$.next( null );
+    }
+  }
+
+
+  public get type(): 'systems_controlled' | 'pilots' {
+    return this._type;
+  }
+
+
   private init_faction( raw_data: RawEmpireData ): Faction | undefined {
     switch (raw_data.faction_id) {
       case 500001:
@@ -28,32 +52,14 @@ export class FactionManager {
     }
   }
 
+
   public toggle( name: 'Minmatar' | 'Amarr' | 'Caldari' | 'Gallente' ) {
     const faction = this.find( name );
     faction.enabled = !faction.enabled;
     this.update$.next( null );
   }
 
-  public get title(): string {
-    if( this.type === 'systems_controlled')
-      return 'Systems Controlled';
-    else if( this.type === 'pilots' )
-      return 'Pilots';
-    else return 'No valid title found'
-  }
 
-  public set type( type: 'systems_controlled' | 'pilots') {
-    if( type !== 'systems_controlled' && type !== 'pilots' )
-      console.error( `${type} is not a valid type` );
-    else {
-      this._type = type;
-      this.update$.next( null );
-    }
-  }
-
-  public get type(): 'systems_controlled' | 'pilots' {
-    return this._type;
-  }
   private find( name : 'Minmatar' | 'Amarr' | 'Caldari' | 'Gallente' ) {
     return this.factions.find( faction => faction.name === name ) as Faction;
   }

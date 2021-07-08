@@ -2,7 +2,6 @@ import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import * as d3 from 'd3';
 import { FwEmpiresService } from 'src/app/fw-empires.service';
 import { ChartData } from 'src/app/interfaces/ChartData.interface';
-
 import { faBirthdayCake, faSkullCrossbones, faFighterJet, faGlobe } from '@fortawesome/free-solid-svg-icons';
 import { Faction } from 'src/app/Faction.class';
 
@@ -32,16 +31,12 @@ export class HomeComponent implements AfterViewInit {
       this.update_title( data.title );
       this.update_legend( data.factions );
       this.update_chart( data.chart_data );
-    });
-
-    this.update_dataset_selection();
-    window.setTimeout( () => {
-      this.update_type( 'pilots' )
+      this.update_dataset_selection( data );
     });
   }
 
 
-  private update_dataset_selection() {
+  private update_dataset_selection( data_2: any ) {
     const area = new SvgArea( 0, 650, 600, 1000 );
     const data: { value: string, icon: any }[] = [
       { value: 'systems_controlled', icon: this.faGlobe.icon },
@@ -82,17 +77,18 @@ export class HomeComponent implements AfterViewInit {
       .attr('fill', 'grey')
       .style('pointer-events', 'none')
       ;
+
+      d3.select( this.datasets.nativeElement )
+      .selectAll('svg>path')
+      .attr( 'fill', 'grey' )
+      .filter( (d: any) => d.value === data_2.selected_type )
+      .attr( 'fill', 'white' )
+      ;
     }
 
 
   private update_type( selection: string ) {
     this.empire_service.current_type = selection as 'systems_controlled'; // this is a lie
-    d3.select( this.datasets.nativeElement )
-    .selectAll('svg>path')
-    .attr( 'fill', 'grey' )
-    .filter( (d: any) => d.value === selection )
-    .attr( 'fill', 'white' )
-    ;
   }
 
 
