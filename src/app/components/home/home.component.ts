@@ -67,7 +67,7 @@ export class HomeComponent implements AfterViewInit {
       .attr('fill', 'transparent')
       .style('cursor', 'pointer')
       .on('click', (event, d) => {
-        this.update_type( d.value )
+        this.empire_service.current_type = d.value as 'systems_controlled'; // this is a lie
       })
       ;
 
@@ -83,11 +83,6 @@ export class HomeComponent implements AfterViewInit {
       .filter( (d: any) => d.value === data_2.selected_type )
       .attr( 'fill', 'white' )
       ;
-  }
-
-
-  private update_type( selection: string ) {
-    this.empire_service.current_type = selection as 'systems_controlled'; // this is a lie
   }
 
 
