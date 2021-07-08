@@ -55,6 +55,9 @@ class FactionDataAdapter {
     if( type === 'pilots' )
       return this._pilots;
 
+    if( type === 'kills' )
+      return this._kills.last_week;
+
     return 1000;
   }
 }

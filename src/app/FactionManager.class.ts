@@ -5,7 +5,7 @@ import { RawEmpireData } from "./RawEmpireData.interface";
 export class FactionManager {
   public factions: Faction[];
   public update$: BehaviorSubject<null> = new BehaviorSubject( null );
-  private _type: 'systems_controlled' | 'pilots' = 'systems_controlled';
+  private _type: 'systems_controlled' | 'pilots' | 'kills' = 'systems_controlled';
   // private period ( default to week )
 
   constructor( raw_data: RawEmpireData[] ) {
@@ -18,12 +18,14 @@ export class FactionManager {
       return 'Systems Controlled';
     else if( this.type === 'pilots' )
       return 'Pilots';
+    else if( this.type === 'kills' )
+      return 'Last weeks kills';
     else return 'No valid title found'
   }
 
 
-  public set type( type: 'systems_controlled' | 'pilots') {
-    if( type !== 'systems_controlled' && type !== 'pilots' )
+  public set type( type: 'systems_controlled' | 'pilots' | 'kills') {
+    if( type !== 'systems_controlled' && type !== 'pilots' && type !== 'kills' )
       console.error( `${type} is not a valid type` );
     else {
       this._type = type;
@@ -32,7 +34,7 @@ export class FactionManager {
   }
 
 
-  public get type(): 'systems_controlled' | 'pilots' {
+  public get type(): 'systems_controlled' | 'pilots' | 'kills' {
     return this._type;
   }
 
