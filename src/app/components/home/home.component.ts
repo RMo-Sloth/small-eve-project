@@ -36,7 +36,7 @@ export class HomeComponent implements AfterViewInit {
     this.update_dataset_selection();
     window.setTimeout( () => {
       this.update_type( 'pilots' )
-    })
+    });
   }
 
   private update_dataset_selection() {
@@ -53,7 +53,6 @@ export class HomeComponent implements AfterViewInit {
     .domain( data.map( data => data.value ))
     .range([area.left, area.right ])
     ;
-
     const svg = d3.select(this.datasets.nativeElement)
       .selectAll('svg')
       .data( data )
@@ -64,7 +63,7 @@ export class HomeComponent implements AfterViewInit {
       .attr('height', x_scale.bandwidth)
       .attr('y', () => ((area.top + area.bottom) / 2))
       .attr('x', (d, i) => { return x_scale(d.value) as number; })
-    ;
+      ;
 
     svg.append('rect')
       .attr('width', '100%')
@@ -73,14 +72,14 @@ export class HomeComponent implements AfterViewInit {
       .style('cursor', 'pointer')
       .on('click', (event, d) => {
         this.update_type( d.value )
-      });
-
+      })
       ;
 
       svg.append('path')
       .attr('d', d => d.icon[4] as string)
       .attr('fill', 'grey')
-      .style('pointer-events', 'none');
+      .style('pointer-events', 'none')
+      ;
     }
 
   private update_type( selection: string ) {
@@ -114,6 +113,7 @@ export class HomeComponent implements AfterViewInit {
   }
 
   private update_legend( legend_data: any[] ) {
+    const area = new SvgArea( 600, 350, 1000, 650 );
     const legend_meta = new LegendaMeta();
     const legend = d3.select( this.legend.nativeElement )
     .selectAll('text')
@@ -125,7 +125,7 @@ export class HomeComponent implements AfterViewInit {
     .text( d => d.name )
     .style('fill', 'white')
     .style( 'cursor', 'pointer' )
-    .attr('x', d => legend_meta.x_pos() + 60 )
+    .attr('x', d => area.left + 60 )
     .attr('y', d => legend_meta.y_scale( d.name ) as number )
     .attr('font-size', 50 )
     .attr('opacity', d => d.enabled ? 1 : 0.3 )
@@ -137,7 +137,7 @@ export class HomeComponent implements AfterViewInit {
     .attr( 'height', 30 )
     .attr( 'width', 30 )
     .attr('fill', d => d.color )
-    .attr('x', d => legend_meta.x_pos() )
+    .attr('x', d => area.left )
     .attr('y', d => legend_meta.y_scale( d.name ) as number - 30 )
     ;
 
@@ -222,10 +222,6 @@ class LegendaMeta {
         'Gallente'
       ] )
       .range([this.area.top + 25, this.area.bottom + 25])
-  }
-
-  public x_pos(): number {
-    return this.area.left;
   }
 
 }
