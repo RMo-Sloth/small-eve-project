@@ -4,6 +4,7 @@ import { FwEmpiresService } from 'src/app/fw-empires.service';
 import { ChartData } from 'src/app/interfaces/ChartData.interface';
 
 import { faBirthdayCake, faSkullCrossbones, faFighterJet, faGlobe } from '@fortawesome/free-solid-svg-icons';
+import { Faction } from 'src/app/Faction.class';
 
 @Component({
   selector: 'app-home',
@@ -38,6 +39,7 @@ export class HomeComponent implements AfterViewInit {
       this.update_type( 'pilots' )
     });
   }
+
 
   private update_dataset_selection() {
     const area = new SvgArea( 0, 650, 600, 1000 );
@@ -82,8 +84,9 @@ export class HomeComponent implements AfterViewInit {
       ;
     }
 
+
   private update_type( selection: string ) {
-    this.empire_service.current_type = selection as 'systems_controlled';
+    this.empire_service.current_type = selection as 'systems_controlled'; // this is a lie
     d3.select( this.datasets.nativeElement )
     .selectAll('svg>path')
     .attr( 'fill', 'grey' )
@@ -91,6 +94,7 @@ export class HomeComponent implements AfterViewInit {
     .attr( 'fill', 'white' )
     ;
   }
+
 
   private update_title( title: string ) {
     d3.select(this.title.nativeElement)
@@ -112,21 +116,16 @@ export class HomeComponent implements AfterViewInit {
       .text(d => d);
   }
 
-  private update_legend( legend_data: any[] ) {
+
+  private update_legend( factions: Faction[] ) {
     const area = new SvgArea( 600, 350, 1000, 650 );
     const y_scale = d3.scaleBand()
-        .paddingInner( 0.1 )
-        .domain( [
-          'Minmatar',
-          'Amarr',
-          'Caldari',
-          'Gallente'
-        ] )
-        .range([area.top + 25, area.bottom + 25])
+      .paddingInner( 0.1 )
+      .domain( factions.map( faction => faction.name ) )
+      .range([area.top + 25, area.bottom + 25]);
     const legend = d3.select( this.legend.nativeElement )
-    .selectAll('text')
-    .data( legend_data )
-    ;
+      .selectAll('text')
+      .data( factions );
 
     legend.enter()
     .append('text')
@@ -153,6 +152,7 @@ export class HomeComponent implements AfterViewInit {
     .attr('opacity', d => d.enabled ? 1 : 0.3 )
     ;
   }
+
 
   private update_chart( chart_data: ChartData[] ) {
     const chart = new BarChartMeta( chart_data );
