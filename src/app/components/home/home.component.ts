@@ -41,7 +41,11 @@ export class HomeComponent implements AfterViewInit {
     let periods: any[];
     if( data.selected_type === 'pilots' || data.selected_type === 'systems_controlled' )
       periods = [];
-    else periods = ['1', '7', '&#x221e;'];
+    else periods = [
+      { description: 'yesterday', text: '1' },
+      { description: 'last_week', text: '7' },
+      { descriptions: 'total', text: '&#x221e;' }
+    ];
     const x_scale = d3.scaleBand()
     .paddingInner( 0.5 )
     .paddingOuter( 0.5 )
@@ -68,7 +72,7 @@ export class HomeComponent implements AfterViewInit {
     .data( periods )
     .enter()
     .append('text')
-    .html( d => d )
+    .html( d => d.text )
     .attr( 'y', area.vertical_center + 15 )
     .attr( 'x', d => x_scale( d ) as number + x_scale.bandwidth()*0.5 )
     .attr( 'stroke', 'grey' )

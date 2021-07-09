@@ -10,7 +10,7 @@ import { RawEmpireData } from './RawEmpireData.interface';
 })
 export class FwEmpiresService {
   private manager !: FactionManager;
-  public data$: BehaviorSubject<any> = new BehaviorSubject<any>( { title: '', factions: [], chart_data: [] } );
+  public data$: BehaviorSubject<any> = new BehaviorSubject<any>( { title: '', factions: [], chart_data: [], selected_type: 'systems_controlled' } );
 
   constructor(
     private eve_http: EveHttpService
