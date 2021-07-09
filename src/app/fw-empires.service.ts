@@ -22,12 +22,14 @@ export class FwEmpiresService {
           title: this.manager.title,
           factions: this.manager.factions,
           chart_data: this.chart_data,
-          selected_type: this.manager.type
+          selected_type: this.manager.type,
+          period: this.manager.period
         }
         this.data$.next( data );
       });
     });
   }
+
 
   public set current_type( type: 'systems_controlled' | 'pilots' ) {
     this.manager.type = type;
@@ -45,7 +47,7 @@ export class FwEmpiresService {
           name: faction.name,
           color: faction.color
         },
-        value: faction.statistics.get( this.manager.type )
+        value: faction.statistics.get( this.manager.type, this.manager.period )
     }) )
     ;
   }
