@@ -15,6 +15,7 @@ export class HomeComponent implements AfterViewInit {
   @ViewChild('chart') chart !: ElementRef<HTMLElement>;
   @ViewChild('legend') legend !: ElementRef<HTMLElement>;
   @ViewChild('datasets') datasets !: ElementRef<HTMLElement>;
+  @ViewChild('periods') periods !: ElementRef<HTMLElement>;
 
   private faSkullCrossbones = faSkullCrossbones;
   private faFighterJet = faFighterJet;
@@ -31,9 +32,50 @@ export class HomeComponent implements AfterViewInit {
       this.update_legend( data.factions );
       this.update_chart( data.chart_data );
       this.update_dataset_selection( data );
+      this.update_period( data );
     });
   }
 
+  private update_period( data: any ) {
+    const area = new SvgArea( 600, 650, 1000, 1000 );
+    const periods = ['1', '7', '&#x221e;'];
+    const x_scale = d3.scaleBand()
+    .paddingInner( 0.5 )
+    .paddingOuter( 0.5 )
+    .domain( periods )
+    .range([area.left, area.right ])
+
+    d3.select( this.periods.nativeElement )
+    .selectAll('circle')
+    .data( periods )
+    .enter()
+    .append('circle')
+    .attr('stroke-width', 5 )
+    .attr('r', 30 )
+    .attr('fill', 'transparent' )
+    .attr( 'stroke', 'grey' )
+    .attr( 'cy', area.vertical_center )
+    .attr( 'cx', d => x_scale( d ) as number + x_scale.bandwidth()*0.5 )
+    .style( 'cursor', 'pointer' )
+    .on( 'click', (event, d) => console.log( d ) )
+    ;
+
+    d3.select( this.periods.nativeElement )
+    .selectAll('text')
+    .data( periods )
+    .enter()
+    .append('text')
+    .html( d => d )
+    .attr( 'y', area.vertical_center + 15 )
+    .attr( 'x', d => x_scale( d ) as number + x_scale.bandwidth()*0.5 )
+    .attr( 'stroke', 'grey' )
+    .attr( 'fill', 'grey' )
+    .attr( 'text-anchor', 'middle' )
+    .style('font-size', 40)
+    .style('pointer-events', 'none' )
+
+
+  }
 
   private update_dataset_selection( data_2: any ) {
     const area = new SvgArea( 0, 650, 600, 1000 );
@@ -232,6 +274,9 @@ class SvgArea {
     }
     public get right() {
       return this.x2 - this.padding;
+    }
+    public get vertical_center() {
+      return (this.y1 + this.y2) / 2;
     }
 
 }
