@@ -44,7 +44,7 @@ export class HomeComponent implements AfterViewInit {
     else periods = [
       { description: 'yesterday', text: '1' },
       { description: 'last_week', text: '7' },
-      { descriptions: 'total', text: '&#x221e;' }
+      { description: 'total', text: '&#x221e;' }
     ];
     const x_scale = d3.scaleBand()
     .paddingInner( 0.5 )
