@@ -35,6 +35,10 @@ export class FwEmpiresService {
     this.manager.type = type;
   }
 
+  public set period( period: 'last_week') {
+    this.manager.period = period;
+  }
+
   public toggle_faction( name: "Minmatar" | "Amarr" | "Caldari" | "Gallente"): void {
     this.manager.toggle( name );
   }

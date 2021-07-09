@@ -6,7 +6,16 @@ export class FactionManager {
   public factions: Faction[];
   public update$: BehaviorSubject<null> = new BehaviorSubject( null );
   private _type: 'systems_controlled' | 'pilots' | 'kills' | 'victory_points' = 'systems_controlled';
-  public period: any = null;
+  private _period: any = 'last_week';
+
+  public set period( period: any ) {
+    this._period = period;
+    this.update$.next(null);
+  }
+
+  public get period() {
+    return this._period;
+  }
 
   constructor( raw_data: RawEmpireData[] ) {
     this.factions = raw_data.map( raw_data => this.init_faction( raw_data ) as Faction );

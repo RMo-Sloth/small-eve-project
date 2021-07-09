@@ -64,7 +64,7 @@ export class HomeComponent implements AfterViewInit {
     .attr( 'cy', area.vertical_center )
     .attr( 'cx', d => x_scale( d ) as number + x_scale.bandwidth()*0.5 )
     .style( 'cursor', 'pointer' )
-    .on( 'click', (event, d) => console.log( d ) )
+    .on( 'click', (event, d) => this.empire_service.period = d.description )
     ;
 
     d3.select( this.periods.nativeElement )
@@ -97,6 +97,7 @@ export class HomeComponent implements AfterViewInit {
 
 
   }
+
 
   private update_dataset_selection( data_2: any ) {
     const area = new SvgArea( 0, 650, 600, 1000 );

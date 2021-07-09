@@ -48,18 +48,12 @@ class FactionDataAdapter {
     this._kills = data.kills;
   }
 
-  get( type: 'systems_controlled' | 'pilots' | 'victory_points' | 'kills', period: 'last_week' | 'total' | null ): number {
+  get( type: 'systems_controlled' | 'pilots' | 'victory_points' | 'kills', period: 'last_week' | 'total' ): number {
     if( type === 'systems_controlled' )
       return this._systems_controlled;
 
     if( type === 'pilots' )
       return this._pilots;
-
-
-    if( period === null ) {
-      console.error('A period is necessary.');
-      return 1000;
-    }
 
     if( type === 'kills' )
       return this._kills[period];
