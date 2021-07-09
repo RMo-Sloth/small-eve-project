@@ -60,7 +60,6 @@ export class HomeComponent implements AfterViewInit {
     .attr('stroke-width', 5 )
     .attr('r', 30 )
     .attr('fill', 'transparent' )
-    .attr( 'stroke', 'grey' )
     .attr( 'cy', area.vertical_center )
     .attr( 'cx', d => x_scale( d ) as number + x_scale.bandwidth()*0.5 )
     .style( 'cursor', 'pointer' )
@@ -75,8 +74,6 @@ export class HomeComponent implements AfterViewInit {
     .html( d => d.text )
     .attr( 'y', area.vertical_center + 15 )
     .attr( 'x', d => x_scale( d ) as number + x_scale.bandwidth()*0.5 )
-    .attr( 'stroke', 'grey' )
-    .attr( 'fill', 'grey' )
     .attr( 'text-anchor', 'middle' )
     .style('font-size', 40)
     .style('pointer-events', 'none' )
@@ -95,6 +92,19 @@ export class HomeComponent implements AfterViewInit {
     .remove()
     ;
 
+    d3.select( this.periods.nativeElement )
+    .selectAll('text')
+    .attr('fill', 'grey' )
+    .attr('stroke', 'grey' )
+    .filter( (d: any) => d.description === data.period )
+    .attr('fill', 'white' )
+    .attr('stroke', 'white' )
+
+    d3.select( this.periods.nativeElement )
+    .selectAll('circle')
+    .attr('stroke', 'grey' )
+    .filter( (d: any) => d.description === data.period )
+    .attr('stroke', 'white' )
 
   }
 
