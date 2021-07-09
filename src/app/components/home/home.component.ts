@@ -38,7 +38,10 @@ export class HomeComponent implements AfterViewInit {
 
   private update_period( data: any ) {
     const area = new SvgArea( 600, 650, 1000, 1000 );
-    const periods = ['1', '7', '&#x221e;'];
+    let periods: any[];
+    if( data.selected_type === 'pilots' || data.selected_type === 'systems_controlled' )
+      periods = [];
+    else periods = ['1', '7', '&#x221e;'];
     const x_scale = d3.scaleBand()
     .paddingInner( 0.5 )
     .paddingOuter( 0.5 )
@@ -73,6 +76,20 @@ export class HomeComponent implements AfterViewInit {
     .attr( 'text-anchor', 'middle' )
     .style('font-size', 40)
     .style('pointer-events', 'none' )
+
+    d3.select( this.periods.nativeElement )
+    .selectAll('text')
+    .data( periods )
+    .exit()
+    .remove()
+    ;
+
+    d3.select( this.periods.nativeElement )
+    .selectAll('circle')
+    .data( periods )
+    .exit()
+    .remove()
+    ;
 
 
   }
