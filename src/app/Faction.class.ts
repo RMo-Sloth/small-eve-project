@@ -1,7 +1,8 @@
 import { RawEmpireData } from "./RawEmpireData.interface";
+import { FactionNames } from "./types/types";
 
 export class Faction {
-  public name !: 'Minmatar' | 'Amarr' | 'Caldari' | 'Gallente';
+  public name !: FactionNames;
   public color !: string;
   public enabled: boolean = true;
   public statistics: FactionDataAdapter;
@@ -14,22 +15,22 @@ export class Faction {
 
 export class MinmatarFaction extends Faction {
   public color = '#653834';
-  public name: 'Minmatar' | 'Amarr' | 'Caldari' | 'Gallente' = 'Minmatar';
+  public name: FactionNames = 'Minmatar';
 }
 
 export class CaldariFaction extends Faction {
   public color = '#4a6c7f';
-  public name: 'Minmatar' | 'Amarr' | 'Caldari' | 'Gallente' = 'Caldari';
+  public name: FactionNames = 'Caldari';
 }
 
 export class AmarrFaction extends Faction {
   public color = '#7f6c50';
-  public name: 'Minmatar' | 'Amarr' | 'Caldari' | 'Gallente' = 'Amarr';
+  public name: FactionNames = 'Amarr';
 }
 
 export class GallenteFaction extends Faction {
   public color = '#366565';
-  public name: 'Minmatar' | 'Amarr' | 'Caldari' | 'Gallente' = 'Gallente';
+  public name: FactionNames = 'Gallente';
 }
 
 

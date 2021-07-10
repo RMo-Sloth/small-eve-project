@@ -4,6 +4,7 @@ import { EveHttpService } from './eve-http.service';
 import { FactionManager } from './FactionManager.class';
 import { ChartData } from './interfaces/ChartData.interface';
 import { RawEmpireData } from './RawEmpireData.interface';
+import { FactionNames } from './types/types';
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +40,7 @@ export class FwEmpiresService {
     this.manager.period = period;
   }
 
-  public toggle_faction( name: "Minmatar" | "Amarr" | "Caldari" | "Gallente"): void {
+  public toggle_faction( name: FactionNames ): void {
     this.manager.toggle( name );
   }
 

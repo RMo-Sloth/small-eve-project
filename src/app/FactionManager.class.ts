@@ -1,6 +1,7 @@
 import { BehaviorSubject } from "rxjs";
 import { AmarrFaction, CaldariFaction, Faction, GallenteFaction, MinmatarFaction } from "./Faction.class";
 import { RawEmpireData } from "./RawEmpireData.interface";
+import { FactionNames } from "./types/types";
 
 export class FactionManager {
   public factions: Faction[];
@@ -78,14 +79,14 @@ export class FactionManager {
   }
 
 
-  public toggle( name: 'Minmatar' | 'Amarr' | 'Caldari' | 'Gallente' ) {
+  public toggle( name: FactionNames ) {
     const faction = this.find( name );
     faction.enabled = !faction.enabled;
     this.update$.next( null );
   }
 
 
-  private find( name : 'Minmatar' | 'Amarr' | 'Caldari' | 'Gallente' ) {
+  private find( name : FactionNames ) {
     return this.factions.find( faction => faction.name === name ) as Faction;
   }
 
