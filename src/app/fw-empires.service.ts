@@ -4,7 +4,7 @@ import { EveHttpService } from './eve-http.service';
 import { FactionManager } from './FactionManager.class';
 import { ChartData } from './interfaces/ChartData.interface';
 import { RawEmpireData } from './RawEmpireData.interface';
-import { FactionNames } from './types/types';
+import { FactionDataPeriod, FactionNames } from './types/types';
 
 @Injectable({
   providedIn: 'root'
@@ -36,7 +36,7 @@ export class FwEmpiresService {
     this.manager.type = type;
   }
 
-  public set period( period: 'last_week') {
+  public set period( period: FactionDataPeriod ) {
     this.manager.period = period;
   }
 

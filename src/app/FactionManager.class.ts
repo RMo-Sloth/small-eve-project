@@ -1,20 +1,20 @@
 import { BehaviorSubject } from "rxjs";
 import { AmarrFaction, CaldariFaction, Faction, GallenteFaction, MinmatarFaction } from "./Faction.class";
 import { RawEmpireData } from "./RawEmpireData.interface";
-import { FactionNames } from "./types/types";
+import { FactionDataPeriod, FactionNames } from "./types/types";
 
 export class FactionManager {
   public factions: Faction[];
   public update$: BehaviorSubject<null> = new BehaviorSubject( null );
   private _type: 'systems_controlled' | 'pilots' | 'kills' | 'victory_points' = 'systems_controlled';
-  private _period: any = 'last_week';
+  private _period: FactionDataPeriod = 'last_week';
 
-  public set period( period: any ) {
+  public set period( period: FactionDataPeriod ) {
     this._period = period;
     this.update$.next(null);
   }
 
-  public get period() {
+  public get period(): FactionDataPeriod {
     return this._period;
   }
 

@@ -1,5 +1,5 @@
 import { RawEmpireData } from "./RawEmpireData.interface";
-import { FactionNames } from "./types/types";
+import { FactionDataPeriod, FactionNames } from "./types/types";
 
 export class Faction {
   public name !: FactionNames;
@@ -49,7 +49,7 @@ class FactionDataAdapter {
     this._kills = data.kills;
   }
 
-  get( type: 'systems_controlled' | 'pilots' | 'victory_points' | 'kills', period: 'last_week' | 'total' | 'yesterday' ): number {
+  get( type: 'systems_controlled' | 'pilots' | 'victory_points' | 'kills', period: FactionDataPeriod ): number {
     if( type === 'systems_controlled' )
       return this._systems_controlled;
 
