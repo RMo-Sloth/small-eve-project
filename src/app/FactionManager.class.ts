@@ -23,14 +23,26 @@ export class FactionManager {
   }
 
   public get title(): string {
+    let period: string;
+    if( this.period === 'last_week' )
+      period = 'Last weeks';
+    else if( this.period === 'total' )
+      period = 'Total';
+    else if( this.period === 'yesterday' )
+      period = 'Yesterdays';
+    else
+      period = ''
+
     if( this.type === 'systems_controlled')
       return 'Systems Controlled';
     else if( this.type === 'pilots' )
       return 'Pilots';
     else if( this.type === 'kills' )
-      return 'Last weeks kills';
+      return `${period} kills`;
+
     else if( this.type === 'victory_points' )
-      return 'Last weeks victory points';
+      return `${period} victory points`;
+
     else return 'No valid title found'
   }
 

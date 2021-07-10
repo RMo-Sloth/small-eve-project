@@ -48,7 +48,7 @@ class FactionDataAdapter {
     this._kills = data.kills;
   }
 
-  get( type: 'systems_controlled' | 'pilots' | 'victory_points' | 'kills', period: 'last_week' | 'total' ): number {
+  get( type: 'systems_controlled' | 'pilots' | 'victory_points' | 'kills', period: 'last_week' | 'total' | 'yesterday' ): number {
     if( type === 'systems_controlled' )
       return this._systems_controlled;
 
