@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { FactionManagerService } from './faction-manager.service';
-import { FactionManager } from './FactionManager.class';
 import { FactionDataPeriod, FactionDataType, FactionNames } from './types/types';
 
 @Injectable({
