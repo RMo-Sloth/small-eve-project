@@ -4,7 +4,7 @@ import { EveHttpService } from './eve-http.service';
 import { FactionManager } from './FactionManager.class';
 import { ChartData } from './interfaces/ChartData.interface';
 import { RawEmpireData } from './RawEmpireData.interface';
-import { FactionDataPeriod, FactionNames } from './types/types';
+import { FactionDataPeriod, FactionDataType, FactionNames } from './types/types';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +32,7 @@ export class FwEmpiresService {
   }
 
 
-  public set current_type( type: 'systems_controlled' | 'pilots' ) {
+  public set current_type( type: FactionDataType ) {
     this.manager.type = type;
   }
 

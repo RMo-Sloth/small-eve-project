@@ -4,6 +4,7 @@ import { FwEmpiresService } from 'src/app/fw-empires.service';
 import { ChartData } from 'src/app/interfaces/ChartData.interface';
 import { faBirthdayCake, faSkullCrossbones, faFighterJet, faGlobe } from '@fortawesome/free-solid-svg-icons';
 import { Faction } from 'src/app/Faction.class';
+import { FactionDataType } from 'src/app/types/types';
 
 @Component({
   selector: 'app-home',
@@ -141,7 +142,7 @@ export class HomeComponent implements AfterViewInit {
       .attr('fill', 'transparent')
       .style('cursor', 'pointer')
       .on('click', (event, d) => {
-        this.empire_service.current_type = d.value as 'systems_controlled'; // this is a lie
+        this.empire_service.current_type = d.value as FactionDataType;
       })
       ;
 

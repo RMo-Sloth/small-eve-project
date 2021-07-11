@@ -1,12 +1,12 @@
 import { BehaviorSubject } from "rxjs";
 import { AmarrFaction, CaldariFaction, Faction, GallenteFaction, MinmatarFaction } from "./Faction.class";
 import { RawEmpireData } from "./RawEmpireData.interface";
-import { FactionDataPeriod, FactionNames } from "./types/types";
+import { FactionDataPeriod, FactionDataType, FactionNames } from "./types/types";
 
 export class FactionManager {
   public factions: Faction[];
   public update$: BehaviorSubject<null> = new BehaviorSubject( null );
-  private _type: 'systems_controlled' | 'pilots' | 'kills' | 'victory_points' = 'systems_controlled';
+  private _type: FactionDataType = 'systems_controlled';
   private _period: FactionDataPeriod = 'last_week';
 
   public set period( period: FactionDataPeriod ) {
@@ -48,17 +48,13 @@ export class FactionManager {
   }
 
 
-  public set type( type: 'systems_controlled' | 'pilots' | 'kills' | 'victory_points') {
-    if( type !== 'systems_controlled' && type !== 'pilots' && type !== 'kills' && type !== 'victory_points' )
-      console.error( `${type} is not a valid type` );
-    else {
+  public set type( type: FactionDataType ) {
       this._type = type;
       this.update$.next( null );
-    }
   }
 
 
-  public get type(): 'systems_controlled' | 'pilots' | 'kills' | 'victory_points' {
+  public get type(): FactionDataType {
     return this._type;
   }
 
