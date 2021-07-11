@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { map, mergeMap, tap } from 'rxjs/operators';
 import { FactionManagerService } from './faction-manager.service';
 import { Faction } from './Faction.class';
+import { FactionManager } from './FactionManager.class';
 import { ChartData } from './interfaces/ChartData.interface';
 import { FactionDataPeriod, FactionDataType, FactionNames } from './types/types';
 
@@ -10,24 +12,24 @@ import { FactionDataPeriod, FactionDataType, FactionNames } from './types/types'
 })
 export class FwEmpiresService {
   public data$: BehaviorSubject<any> = new BehaviorSubject<any>( { title: '', factions: [], chart_data: [], selected_type: 'systems_controlled' } );
+  public manager!: FactionManager;
 
   constructor(
     private faction_manager: FactionManagerService
   ) {
     this.faction_manager.manager()
-    .subscribe( manager => {
-      manager.update$.subscribe( () => {
-        // data is function of manager, so I can return data instead
-        const data = {
-          title: manager.title,
-          factions: manager.factions,
-          chart_data: this.chart_data( manager.factions ),
-          selected_type: manager.type,
-          period: manager.period
-        }
-        this.data$.next( data );
-      });
-    });
+    .pipe(
+      tap( manager => this.manager = manager ),
+      mergeMap( manager => manager.update$ ),
+      map( () => ({
+        title: this.manager.title,
+        factions: this.manager.factions,
+        chart_data: this.chart_data( this.manager.factions ),
+        selected_type: this.manager.type,
+        period: this.manager.period
+      }) )
+    )
+    .subscribe( data => { this.data$.next( data ); });
   }
 
 
