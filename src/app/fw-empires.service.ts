@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { FactionManagerService } from './faction-manager.service';
+import { Faction } from './Faction.class';
 import { FactionManager } from './FactionManager.class';
 import { ChartData } from './interfaces/ChartData.interface';
 import { FactionDataPeriod, FactionDataType, FactionNames } from './types/types';
@@ -22,7 +23,7 @@ export class FwEmpiresService {
         const data = {
           title: manager.title,
           factions: manager.factions,
-          chart_data: this.chart_data,
+          chart_data: this.chart_data( manager.factions ),
           selected_type: manager.type,
           period: manager.period
         }
@@ -44,8 +45,8 @@ export class FwEmpiresService {
     this.manager.toggle( name );
   }
 
-  private get chart_data(): ChartData[] {
-    return this.manager.factions
+  private chart_data( factions: Faction[] ): ChartData[] {
+    return factions
     .filter( faction => faction.enabled )
     .map( faction => ({
         faction: {

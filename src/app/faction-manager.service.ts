@@ -10,9 +10,11 @@ import { RawEmpireData } from './RawEmpireData.interface';
 })
 export class FactionManagerService {
 
+
   constructor(
     private eve_http: EveHttpService,
   ) {}
+
 
   public manager(): Observable<FactionManager> {
     return this.fetch_data()
@@ -20,6 +22,7 @@ export class FactionManagerService {
       raw_data => new FactionManager( raw_data ) )
     )
   }
+
 
   private fetch_data(): Observable<RawEmpireData[]> {
     return this.eve_http.get('https://esi.evetech.net/latest/fw/stats') as Observable<RawEmpireData[]>;
