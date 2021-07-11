@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { EveHttpService } from './eve-http.service';
+import { BehaviorSubject } from 'rxjs';
+import { FactionManagerService } from './faction-manager.service';
 import { FactionManager } from './FactionManager.class';
 import { ChartData } from './interfaces/ChartData.interface';
-import { RawEmpireData } from './RawEmpireData.interface';
 import { FactionDataPeriod, FactionDataType, FactionNames } from './types/types';
 
 @Injectable({
@@ -14,17 +13,18 @@ export class FwEmpiresService {
   public data$: BehaviorSubject<any> = new BehaviorSubject<any>( { title: '', factions: [], chart_data: [], selected_type: 'systems_controlled' } );
 
   constructor(
-    private eve_http: EveHttpService
+    private faction_manager: FactionManagerService
   ) {
-    this.fetch_data().subscribe( raw_data => {
-      this.manager = new FactionManager( raw_data );
+    this.faction_manager.manager()
+    .subscribe( manager => {
+      this.manager = manager;
       this.manager.update$.subscribe( () => {
         const data = {
-          title: this.manager.title,
-          factions: this.manager.factions,
+          title: manager.title,
+          factions: manager.factions,
           chart_data: this.chart_data,
-          selected_type: this.manager.type,
-          period: this.manager.period
+          selected_type: manager.type,
+          period: manager.period
         }
         this.data$.next( data );
       });
@@ -55,10 +55,6 @@ export class FwEmpiresService {
         value: faction.statistics.get( this.manager.type, this.manager.period )
     }) )
     ;
-  }
-
-  private fetch_data(): Observable<RawEmpireData[]> {
-    return this.eve_http.get('https://esi.evetech.net/latest/fw/stats') as Observable<RawEmpireData[]>;
   }
 
 }
