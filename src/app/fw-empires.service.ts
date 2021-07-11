@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { FactionManagerService } from './faction-manager.service';
 import { Faction } from './Faction.class';
-import { FactionManager } from './FactionManager.class';
 import { ChartData } from './interfaces/ChartData.interface';
 import { FactionDataPeriod, FactionDataType, FactionNames } from './types/types';
 
@@ -10,7 +9,6 @@ import { FactionDataPeriod, FactionDataType, FactionNames } from './types/types'
   providedIn: 'root'
 })
 export class FwEmpiresService {
-  private manager !: FactionManager;
   public data$: BehaviorSubject<any> = new BehaviorSubject<any>( { title: '', factions: [], chart_data: [], selected_type: 'systems_controlled' } );
 
   constructor(
@@ -18,8 +16,8 @@ export class FwEmpiresService {
   ) {
     this.faction_manager.manager()
     .subscribe( manager => {
-      this.manager = manager;
-      this.manager.update$.subscribe( () => {
+      manager.update$.subscribe( () => {
+        // data is function of manager, so I can return data instead
         const data = {
           title: manager.title,
           factions: manager.factions,
@@ -34,17 +32,18 @@ export class FwEmpiresService {
 
 
   public set current_type( type: FactionDataType ) {
-    this.manager.type = type;
+    this.faction_manager.type = type;
   }
 
   public set period( period: FactionDataPeriod ) {
-    this.manager.period = period;
+    this.faction_manager.period = period;
   }
 
   public toggle_faction( name: FactionNames ): void {
-    this.manager.toggle( name );
+    this.faction_manager.toggle( name );
   }
 
+  // can move this up to faction_manager
   private chart_data( factions: Faction[] ): ChartData[] {
     return factions
     .filter( faction => faction.enabled )
@@ -53,7 +52,7 @@ export class FwEmpiresService {
           name: faction.name,
           color: faction.color
         },
-        value: faction.statistics.get( this.manager.type, this.manager.period )
+        value: faction.statistics.get( this.faction_manager.type, this.faction_manager.period )
     }) )
     ;
   }
