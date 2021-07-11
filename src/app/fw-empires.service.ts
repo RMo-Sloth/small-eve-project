@@ -9,7 +9,6 @@ import { FactionDataPeriod, FactionDataType, FactionNames } from './types/types'
 })
 export class FwEmpiresService {
   public data$: Observable<any> = new BehaviorSubject<any>( { title: '', factions: [], chart_data: [], selected_type: 'systems_controlled' } );
-  public manager!: FactionManager;
 
   constructor(
     private faction_manager: FactionManagerService
