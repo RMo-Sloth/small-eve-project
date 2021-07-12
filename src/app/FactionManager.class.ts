@@ -1,5 +1,6 @@
 import { BehaviorSubject } from "rxjs";
-import { AmarrFaction, CaldariFaction, Faction, GallenteFaction, MinmatarFaction } from "./Faction.class";
+import { Faction } from "./Faction.class";
+import { FactionFactory } from "./FactionFactory";
 import { RawEmpireData } from "./RawEmpireData.interface";
 import { FactionDataPeriod, FactionDataType, FactionNames } from "./types/types";
 
@@ -19,7 +20,7 @@ export class FactionManager {
   }
 
   constructor( raw_data: RawEmpireData[] ) {
-    this.factions = raw_data.map( raw_data => this.init_faction( raw_data ) as Faction );
+    this.factions = raw_data.map( raw_data => FactionFactory.create( raw_data ) as Faction );
     this.update$.next(null);
   }
 
@@ -56,22 +57,6 @@ export class FactionManager {
 
   public get type(): FactionDataType {
     return this._type;
-  }
-
-
-  private init_faction( raw_data: RawEmpireData ): Faction | undefined {
-    switch (raw_data.faction_id) {
-      case 500001:
-        return new CaldariFaction( raw_data );
-      case 500002:
-        return new MinmatarFaction( raw_data );
-      case 500003:
-        return new AmarrFaction( raw_data );
-      case 500004:
-        return new GallenteFaction( raw_data );
-      default:
-        return undefined;
-    }
   }
 
 
