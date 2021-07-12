@@ -4,9 +4,8 @@ import { map, mergeMap, tap } from 'rxjs/operators';
 import { EveHttpService } from './eve-http.service';
 import { Faction } from './Faction.class';
 import { FactionManager } from './FactionManager.class';
-import { ChartData } from './interfaces/ChartData.interface';
 import { RawEmpireData } from './RawEmpireData.interface';
-import { FactionDataPeriod, FactionDataType, FactionNames } from './types/types';
+import { ChartData, FactionDataPeriod, FactionDataType, FactionNames } from './types/types';
 
 @Injectable({
   providedIn: 'root'
