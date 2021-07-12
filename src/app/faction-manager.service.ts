@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, mergeMap, tap } from 'rxjs/operators';
 import { EveHttpService } from './eve-http.service';
-import { Faction } from './Faction.class';
-import { FactionManager } from './FactionManager.class';
+import { Faction } from './classes/Faction.class';
 import { RawEmpireData } from './RawEmpireData.interface';
 import { ChartData, FactionDataPeriod, FactionDataType, FactionNames } from './types/types';
+import { FactionManager } from './classes/FactionManager.class';
 
 @Injectable({
   providedIn: 'root'

@@ -1,8 +1,8 @@
 import { BehaviorSubject } from "rxjs";
+import { RawEmpireData } from "../RawEmpireData.interface";
+import { FactionDataPeriod, FactionDataType, FactionNames } from "../types/types";
 import { Faction } from "./Faction.class";
 import { FactionFactory } from "./FactionFactory";
-import { RawEmpireData } from "./RawEmpireData.interface";
-import { FactionDataPeriod, FactionDataType, FactionNames } from "./types/types";
 
 export class FactionManager {
   public factions: Faction[];

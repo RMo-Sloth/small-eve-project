@@ -1,5 +1,5 @@
+import { RawEmpireData } from "../RawEmpireData.interface";
 import { AmarrFaction, CaldariFaction, Faction, GallenteFaction, MinmatarFaction } from "./Faction.class";
-import { RawEmpireData } from "./RawEmpireData.interface";
 
 export class FactionFactory {
   public static create( raw_data: RawEmpireData ): Faction | undefined {

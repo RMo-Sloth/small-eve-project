@@ -1,10 +1,9 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import * as d3 from 'd3';
 import { FwEmpiresService } from 'src/app/fw-empires.service';
-import { ChartData } from 'src/app/interfaces/ChartData.interface';
 import { faBirthdayCake, faSkullCrossbones, faFighterJet, faGlobe } from '@fortawesome/free-solid-svg-icons';
-import { Faction } from 'src/app/Faction.class';
-import { FactionDataType } from 'src/app/types/types';
+import { Faction } from 'src/app/classes/Faction.class';
+import { ChartData, FactionDataType } from 'src/app/types/types';
 
 @Component({
   selector: 'app-home',

@@ -1,5 +1,5 @@
-import { RawEmpireData } from "./RawEmpireData.interface";
-import { FactionDataPeriod, FactionDataType, FactionNames } from "./types/types";
+import { RawEmpireData } from "../RawEmpireData.interface";
+import { FactionDataPeriod, FactionDataType, FactionNames } from "../types/types";
 
 export class Faction {
   public name !: FactionNames;
