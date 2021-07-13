@@ -2,18 +2,16 @@ import { RawEmpireData } from "../RawEmpireData.interface";
 import { AmarrFaction, CaldariFaction, Faction, GallenteFaction, MinmatarFaction } from "./Faction.class";
 
 export class FactionFactory {
+  private static factions: Map<number, { new( raw_data: RawEmpireData ): Faction }> = new Map()
+  .set( 500001, CaldariFaction )
+  .set( 500002, MinmatarFaction )
+  .set( 500003, AmarrFaction )
+  .set( 500004, GallenteFaction )
+  ;
+
+
   public static create( raw_data: RawEmpireData ): Faction | undefined {
-    switch (raw_data.faction_id) {
-      case 500001:
-        return new CaldariFaction( raw_data );
-      case 500002:
-        return new MinmatarFaction( raw_data );
-      case 500003:
-        return new AmarrFaction( raw_data );
-      case 500004:
-        return new GallenteFaction( raw_data );
-      default:
-        return undefined;
-    }
+    let faction = this.factions.get( raw_data.faction_id );
+    return faction ? new faction( raw_data ) : undefined;
   }
 }
