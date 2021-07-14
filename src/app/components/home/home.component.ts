@@ -33,7 +33,20 @@ export class HomeComponent implements AfterViewInit {
       this.update_chart( data.chart_data );
       this.update_dataset_selection( data );
       this.update_period( data );
+      this.update_y_axis( data.chart_data );
     });
+  }
+
+  private update_y_axis( chart_data: ChartData[] ) {
+    const extent = d3.extent( chart_data, d => d.value ) as number[];
+    const y_scale = d3.scaleLinear().domain( extent ).range([0,500]);
+    const y_axis = d3.axisLeft( y_scale );
+    d3.select('svg')
+    .append('g')
+    .call( y_axis )
+    console.log( y_scale );
+
+
   }
 
   private update_period( data: any ) {
