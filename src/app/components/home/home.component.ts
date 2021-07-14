@@ -16,6 +16,7 @@ export class HomeComponent implements AfterViewInit {
   @ViewChild('legend') legend !: ElementRef<HTMLElement>;
   @ViewChild('datasets') datasets !: ElementRef<HTMLElement>;
   @ViewChild('periods') periods !: ElementRef<HTMLElement>;
+  @ViewChild('y_axis') y_axis !: ElementRef<HTMLElement>;
 
   private faSkullCrossbones = faSkullCrossbones;
   private faFighterJet = faFighterJet;
@@ -38,15 +39,38 @@ export class HomeComponent implements AfterViewInit {
   }
 
   private update_y_axis( chart_data: ChartData[] ) {
+    const area = new SvgArea( 0, 250, 600, 750 );
+    // create axis
     const extent = d3.extent( chart_data, d => d.value ) as number[];
-    const y_scale = d3.scaleLinear().domain( extent ).range([0,500]);
-    const y_axis = d3.axisLeft( y_scale );
-    d3.select('svg')
-    .append('g')
+    const y_scale = d3.scaleLinear().domain( extent ).range([area.bottom, area.top]);
+    const y_axis = d3.axisLeft( y_scale )
+    .tickSizeInner( 5 )
+    .tickSizeOuter( 2 )
+    .tickPadding( 5 )
+    .ticks(5)
+    ;
+
+
+    d3.select( this.y_axis.nativeElement ).select("g").remove();
+
+    // render axis to gui
+    d3.select( this.y_axis.nativeElement )
+    .append( 'g' )
     .call( y_axis )
-    console.log( y_scale );
+    .attr("transform", "translate(50, 0)")
 
+    d3.select( this.y_axis.nativeElement )
+    .selectAll('.tick line')
+    .attr('stroke', 'white')
 
+    d3.select( this.y_axis.nativeElement )
+    .selectAll('.tick text')
+    .attr('fill', 'white')
+    .style('font-size', '20')
+
+    d3.select( this.y_axis.nativeElement )
+    .selectAll('.domain')
+    .attr('fill', 'white')
   }
 
   private update_period( data: any ) {
