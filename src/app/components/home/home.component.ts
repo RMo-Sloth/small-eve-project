@@ -41,8 +41,8 @@ export class HomeComponent implements AfterViewInit {
   private update_y_axis( chart_data: ChartData[] ) {
     const area = new SvgArea( 0, 250, 600, 750 );
     // create axis
-    const extent = d3.extent( chart_data, d => d.value ) as number[];
-    const y_scale = d3.scaleLinear().domain( extent ).range([area.bottom, area.top]);
+    const max = d3.max( chart_data, d => d.value ) as number;
+    const y_scale = d3.scaleLinear().domain( [0, max] ).range([area.bottom, area.top]);
     const y_axis = d3.axisLeft( y_scale )
     .tickSizeInner( 5 )
     .tickSizeOuter( 2 )
