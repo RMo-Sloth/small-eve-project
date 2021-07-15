@@ -168,7 +168,7 @@ export class HomeComponent implements AfterViewInit {
       .attr('viewBox', d => `0 0 ${d.icon[0]} ${d.icon[1]}`)
       .attr('width', x_scale.bandwidth)
       .attr('height', x_scale.bandwidth)
-      .attr('y', () => ((area.top + area.bottom) / 2))
+      .attr('y', d => ((area.top + area.bottom) / 2 ) - 0.5*x_scale.bandwidth() )
       .attr('x', (d, i) => { return x_scale(d.value) as number; })
       ;
 
