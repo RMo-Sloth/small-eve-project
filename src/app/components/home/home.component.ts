@@ -39,7 +39,7 @@ export class HomeComponent implements AfterViewInit {
   }
 
   private update_y_axis( chart_data: ChartData[] ) {
-    const area = new SvgArea( 0, 250, 600, 750 );
+    const area = new SvgArea( 0, 250, 150, 750 );
     // create axis
     const max = d3.max( chart_data, d => d.value ) as number;
     const y_scale = d3.scaleLinear().domain( [0, max] ).range([area.bottom, area.top]);
@@ -57,7 +57,7 @@ export class HomeComponent implements AfterViewInit {
     d3.select( this.y_axis.nativeElement )
     .append( 'g' )
     .call( y_axis )
-    .attr("transform", "translate(50, 0)")
+    .attr("transform", `translate(${area.right}, 0)`)
 
     d3.select( this.y_axis.nativeElement )
     .selectAll('.tick line')
@@ -291,7 +291,7 @@ export class HomeComponent implements AfterViewInit {
 
 // classes
 class BarChartMeta {
-  private area = new SvgArea( 0, 250, 600, 750 );
+  private area = new SvgArea( 50, 250, 600, 750 );
   private data: ChartDataHelper;
   constructor(
     chart_data: ChartData[]
