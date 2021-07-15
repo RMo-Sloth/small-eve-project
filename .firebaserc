@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "factionwarfarestats": {
+      "hosting": {
+        "small-eve-project": [
+          "factionwarfarestats"
+        ]
+      }
+    }
+  }
+}
